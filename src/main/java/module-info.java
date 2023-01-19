@@ -6,4 +6,6 @@ module com.example.openuiassignmentcenterui {
 
     opens com.example.openuiassignmentcenterui to javafx.fxml;
     exports com.example.openuiassignmentcenterui;
+    exports com.example.openuiassignmentcenterui.controllers;
+    opens com.example.openuiassignmentcenterui.controllers to javafx.fxml;
 }

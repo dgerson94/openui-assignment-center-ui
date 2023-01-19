@@ -16,6 +16,9 @@ public class SceneController {
 
 
     public void switchToScene(ActionEvent event, Parent fxml) throws IOException{
+        /*
+        * TODO: Add optional variables, that allow to pass on relevant varibales when changing fxml if possible.
+         */
         root = fxml;
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);

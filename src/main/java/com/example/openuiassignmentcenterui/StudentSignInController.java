@@ -29,7 +29,8 @@ public class StudentSignInController {
         String password = passwordField.getText();
 ////       Note that I have changed the student on server to get the answer I want, will need to make sure Matan changes
 //        also. Also need to deal with the answer in a different way.
-        Boolean succesful_logon = check_for_students(user_name,password);
+//        Boolean succesful_logon = check_for_students(user_name,password);
+        Boolean succesful_logon = true;
         if (succesful_logon){
             Parent root = FXMLLoader.load(getClass().getResource("student_dashboard.fxml"));
             SceneController scene_switch = new SceneController();
