@@ -1,4 +1,4 @@
-package com.example.openuiassignmentcenterui;
+package com.example.openuiassignmentcenterui.helpers;
 
 import javafx.scene.control.Alert;
 

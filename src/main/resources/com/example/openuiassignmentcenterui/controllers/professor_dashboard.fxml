@@ -7,9 +7,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="218.0" prefWidth="531.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.ProffesorDashboardController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="218.0" prefWidth="531.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.ProfessorDashboardController">
    <children>
-      <Label text="Proffesor Dashboard">
+      <Label text="Professor Dashboard">
          <font>
             <Font name="Optima Regular" size="36.0" />
          </font>
@@ -18,12 +18,13 @@
          </padding></Label>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#setCourseRequirmentsButtonPressed" prefHeight="32.0" prefWidth="158.0" text="Set Course Requirements" textAlignment="CENTER" wrapText="true" />
+            <Button mnemonicParsing="false" onAction="#setCourseRequirementsButtonPressed" prefHeight="32.0" prefWidth="158.0" text="Set Course Requirements" textAlignment="CENTER" wrapText="true" />
             <Button mnemonicParsing="false" onAction="#checkAssignmentsButtonPressed" prefHeight="26.0" prefWidth="152.0" text="Check Assignments" />
          </children>
          <padding>
             <Insets left="8.0" right="8.0" />
          </padding>
       </HBox>
+      <Button mnemonicParsing="false" onAction="#logoutButtonPressed" text="Logout" />
    </children>
 </VBox>

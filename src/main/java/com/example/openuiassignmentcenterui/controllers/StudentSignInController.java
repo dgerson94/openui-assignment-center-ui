@@ -1,9 +1,7 @@
-package com.example.openuiassignmentcenterui;
+package com.example.openuiassignmentcenterui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -32,9 +30,7 @@ public class StudentSignInController {
 //        Boolean succesful_logon = check_for_students(user_name,password);
         Boolean succesful_logon = true;
         if (succesful_logon){
-            Parent root = FXMLLoader.load(getClass().getResource("student_dashboard.fxml"));
-            SceneController scene_switch = new SceneController();
-            scene_switch.switchToScene(event,root);
+            SceneController.switchToScene(event,"student_dashboard.fxml");
         }
         else{
             Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.SetAssignmentsPropertiesController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.SetAssignmentsPropertiesController">
    <children>
       <VBox alignment="CENTER" prefHeight="384.0" prefWidth="181.0" spacing="25.0">
          <children>
@@ -37,39 +37,38 @@
                 <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="199.0" minWidth="10.0" prefWidth="199.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="129.0" text="Upload Assignment" GridPane.rowIndex="1" />
-                  <Label alignment="CENTER" text="Assignment Due Date" GridPane.rowIndex="2" />
-                  <Label alignment="CENTER" text="Grade Due Date" GridPane.rowIndex="3" />
-                  <Label text="Percentage Of Course Grade" GridPane.rowIndex="4" />
-                  <DatePicker fx:id="assignmentDueDatePicker" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <DatePicker fx:id="gradeDueDatePicker" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Slider fx:id="percentageOfCourseGradeSlider" blockIncrement="5.0" majorTickUnit="5.0" max="30.0" min="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="15.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <Label alignment="CENTER" prefHeight="17.0" prefWidth="129.0" text="Upload Assignment" />
+                  <Label alignment="CENTER" text="Assignment Due Date" GridPane.rowIndex="1" />
+                  <Label alignment="CENTER" text="Grade Due Date" GridPane.rowIndex="2" />
+                  <Label text="Percentage Of Course Grade" GridPane.rowIndex="3" />
+                  <DatePicker fx:id="assignmentDueDatePicker" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <DatePicker fx:id="gradeDueDatePicker" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Slider fx:id="percentageOfCourseGradeSlider" blockIncrement="5.0" majorTickUnit="5.0" max="30.0" min="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="15.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <padding>
                         <Insets left="8.0" right="8.0" />
                      </padding>
                   </Slider>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="16.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="16.0" GridPane.columnIndex="1">
                      <children>
                         <TextField fx:id="assignmentFileTextField" alignment="CENTER" disable="true" promptText="Please Upload Assignment" />
                         <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#uploadFileButtonPressed" text="Upload File" textAlignment="CENTER" />
                      </children>
                   </VBox>
-                  <Label fx:id="Title" alignment="CENTER" prefHeight="35.0" prefWidth="177.0" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#backButtonPressed" text="Back" GridPane.columnIndex="1" />
                </children>
             </GridPane>
-            <Button mnemonicParsing="false" onAction="#saveButtonPressed" text="Save" />
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#saveButtonPressed" text="Save" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#editButtonPressed" prefWidth="44.5" text="Edit" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#backButtonPressed" text="Back" />
+               </children>
+            </HBox>
          </children>
       </VBox>
    </children>
