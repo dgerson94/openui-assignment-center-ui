@@ -9,7 +9,7 @@ public class Course {
     public String professorId;
     public boolean tasksSet;
     //TODO: Need to learn what to do with null values so there won't be an error.
-    //private Collection<Task> tasks;
+    private transient Collection<Task> tasks;
 
     public Course(){
 

@@ -1,5 +1,6 @@
 package com.example.openuiassignmentcenterui.models;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -7,15 +8,15 @@ public class Task {
     private String id;
     private Date submissionDeadline;
     private Date checkDeadLine;
-    private double weightInGrade;
+    private Double weightInGrade;
 
-//    private File file;
-//
-//    private Course course;
+    private transient File file;
+
+    private Integer courseId;
 
     public Task(){}
 
-    public Task(String id, Date submissionDeadline, Date checkDeadLine, double weightInGrade) {
+    public Task(String id, Date submissionDeadline, Date checkDeadLine, Double weightInGrade) {
         this.id = id;
         this.submissionDeadline = submissionDeadline;
         this.checkDeadLine = checkDeadLine;
@@ -46,13 +47,15 @@ public class Task {
         this.checkDeadLine = checkDeadLine;
     }
 
-    public double getWeightInGrade() {
+    public Double getWeightInGrade() {
         return weightInGrade;
     }
 
-    public void setWeightInGrade(double weightInGrade) {
-        this.weightInGrade = weightInGrade;
-    }
+    public void setWeightInGrade(Double weightInGrade) { this.weightInGrade = weightInGrade; }
+
+    public void setCourseId (Integer courseId) { this.courseId = courseId; }
+
+    public Integer getCourseId() { return courseId; }
 
 //    public File getFile() {
 //        return file;

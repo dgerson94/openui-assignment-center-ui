@@ -11,8 +11,8 @@ public class Error {
     }
 
     public Error(){
-        this.title = "Genereic Error";
-        this.message = "Dimwit, you did somethign wrong, figure it out!";
+        this.title = "Generic Error";
+        this.message = "Dimwit, you did something wrong, figure it out!";
     }
 
     public void raiseError(){

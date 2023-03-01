@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.io.BufferedReader;
@@ -25,13 +26,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 
 public class SetCourseRequirementsController {
-
     private Professor user;
 
     private ArrayList<Course> professorCourses;
@@ -43,6 +45,9 @@ public class SetCourseRequirementsController {
     private ChoiceBox<Integer> numberOfAssignmentsPicker;
 
     @FXML
+    private Label numberOfAssignmentsLabel;
+
+    @FXML
     void continueButtonPressed(ActionEvent event) throws IOException {
         String pickedCourse = listOfCourses.getSelectionModel().getSelectedItem();
         if (pickedCourse == null) {
@@ -52,30 +57,26 @@ public class SetCourseRequirementsController {
         else {
             String courseId =  getCourseId(pickedCourse);
             StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Https.PROFESSOR,"http://localhost:8080/courses/" + courseId + "/tasks");
-            if (response != null){
-                //TODO: If response isn't null take course info and pass it to set_assignments_properties the info we already have.
+            if (!response.toString().equals("[]")){
                 TypeToken <ArrayList<Task>> courseType = new TypeToken<>() {
                 };
                 ArrayList<Task> tasks = new Gson().fromJson(String.valueOf(response), courseType);
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("set_assignments_properties.fxml"));
-                Parent root = loader.load();
-                SetAssignmentsPropertiesController sapc = loader.getController();
-                sapc.setTasks(tasks,Integer.valueOf(courseId));
-                SceneController.switchToScene(event, root);
+                goToSetAssignments(tasks, courseId, event);
             }
             else{
-                if (numberOfAssignmentsPicker.getValue() == null) {
-                    Error e = new Error("No number selected.", "You did not select how many assignments will be in the course. Please select how many there will be.");
-                    e.raiseError();
+                if (numberOfAssignmentsPicker.isVisible()) {
+                    if (numberOfAssignmentsPicker.getValue() == null) {
+                        Error e = new Error("No number selected.", "You did not select how many assignments will be in the course. Please select how many there will be.");
+                        e.raiseError();
+                    } else {
+                        Integer numberOfAssignments = numberOfAssignmentsPicker.getValue();
+                        ArrayList<Task> tasks = makeEmptyTasks(numberOfAssignments);
+                        goToSetAssignments(tasks, courseId, event);
+                    }
                 }
-                else {
-                    Integer numberOfAssignments = numberOfAssignmentsPicker.getValue();
-                    String course = listOfCourses.getSelectionModel().getSelectedItem();
-                    /*TODO:Need to fix that it saves the info in database, not just pass on to next controller.
-                     *  Also Need to make it that there is no option to change requirements after assignmentDueDate.
-                     * Also need to first check if we already have information about that course.
-                     */
-                    SceneController.switchToScene(event, "set_assignments_properties.fxml");
+                else{
+                    numberOfAssignmentsPicker.setVisible(true);
+                    numberOfAssignmentsLabel.setVisible(true);
                 }
             }
 
@@ -84,9 +85,30 @@ public class SetCourseRequirementsController {
 
     }
 
+    private void goToSetAssignments(ArrayList<Task> tasks, String courseId, ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("set_assignments_properties.fxml"));
+        Parent root = loader.load();
+        SetAssignmentsPropertiesController sapc = loader.getController();
+        sapc.setTasks(user,tasks,Integer.valueOf(courseId));
+        SceneController.switchToScene(event, root);
+    }
+
+    private ArrayList<Task> makeEmptyTasks(Integer numberOfAssignments) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (int i = 1; i <= numberOfAssignments; i++){
+            Task temp = new Task(String.valueOf(i), new Date(), new Date(), 0.1);
+            tasks.add(temp);
+        }
+        return tasks;
+    }
+
     @FXML
     void backButtonPressed(ActionEvent event) throws IOException {
-        SceneController.switchToScene(event, "professor_dashboard.fxml");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
+        Parent root = loader.load();
+        ProfessorDashboardController pdc = loader.getController();
+        pdc.setUser(user);
+        SceneController.switchToScene(event, root);
     }
 
     public void setProfessor(Professor user) throws IOException {

@@ -1,11 +1,17 @@
 package com.example.openuiassignmentcenterui.controllers;
 
+import com.example.openuiassignmentcenterui.helpers.Https;
+import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Task;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -22,9 +28,13 @@ public class SetAssignmentsPropertiesController {
 
     private ArrayList<Task> tasks;
 
+    private Professor user;
+
     private Integer courseId;
     @FXML
     private Label Title;
+
+    private Task currentTask;
 
     @FXML
     private DatePicker assignmentDueDatePicker;
@@ -52,18 +62,51 @@ public class SetAssignmentsPropertiesController {
 
     @FXML
     void backButtonPressed(ActionEvent event) throws IOException {
-        SceneController.switchToScene(event,"set_course_requirements.fxml");
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("set_course_requirements.fxml"));
+        Parent root = loader.load();
+        SetCourseRequirementsController scrc = loader.getController();
+        scrc.setProfessor(user);
+        SceneController.switchToScene(event, root);
     }
 
     @FXML
     void editButtonPressed(ActionEvent event) {
-        //TODO: Enable changing the info of a certain assignment.
+        String pickedTaskName = assignmentList.getSelectionModel().getSelectedItem();
+        Task pickedTask = getTask(pickedTaskName.substring(pickedTaskName.length()-1));
+        setDisable(percentageOfCourseGradeSlider,gradeDueDatePicker,assignmentDueDatePicker,false);
+    }
 
+    private Task getTask(String pickedTaskName) {
+        Task ret = null;
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getId().matches(pickedTaskName))
+                ret = tasks.get(i);
+        }
+        return ret;
     }
 
     @FXML
-    void saveButtonPressed(ActionEvent event) {
-        //TODO: Save the info to database and then return to "set_course_requirements.fxml"
+    void saveButtonPressed(ActionEvent event) throws IOException {
+        //TODO: Need to have two different actions - One for saving all info in Json and one for sending File.
+        currentTask.setCheckDeadLine(makeDate(gradeDueDatePicker.getValue()));
+        currentTask.setSubmissionDeadline(makeDate(assignmentDueDatePicker.getValue()));
+        currentTask.setWeightInGrade(percentageOfCourseGradeSlider.getValue());
+        sendJson();
+        sendFile();
+        setDisable(percentageOfCourseGradeSlider,gradeDueDatePicker,assignmentDueDatePicker,true);
+    }
+
+    private void sendFile() {
+
+    }
+
+    private void sendJson() throws IOException {
+        Task tmp = new Task(currentTask.getId(),currentTask.getSubmissionDeadline(),currentTask.getCheckDeadLine(),currentTask.getWeightInGrade());
+        //tmp.setCourseId(courseId);
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(tmp);
+        StringBuffer response = Https.httpPost(user.getId(),user.getPassword(),null,"http://localhost:8080/courses/1/tasks",jsonResponse);
+        System.out.println(response.toString());
     }
 
     private ObservableList<String> createObservableList(Integer size){
@@ -76,15 +119,14 @@ public class SetAssignmentsPropertiesController {
         return oList;
     }
 
-    public void setTasks(ArrayList<Task> tasks, Integer valueOf) {
+    public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId) {
+        this.user = user;
         this.tasks = tasks;
-        this.courseId = valueOf;
+        this.courseId = courseId;
         ObservableList<String> assignments = createObservableList(tasks.size());
         assignmentList.setItems(assignments);
         onItemSelected(assignmentList);
-
     }
-
 
 
     private LocalDate makeLocalDate(Date date) {
@@ -93,6 +135,14 @@ public class SetAssignmentsPropertiesController {
         ZonedDateTime zonedDateTime = instant.atZone(zoneId);
         LocalDate localDate = zonedDateTime.toLocalDate();
         return localDate;
+    }
+
+    private Date makeDate (LocalDate localDate){
+        LocalDateTime localDateTime = localDate.atStartOfDay(); // get the start of the day
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault()); // get the ZonedDateTime
+        Instant instant = zonedDateTime.toInstant(); // get the Instant
+        Date date = Date.from(instant); // convert Instant to Date
+        return date;
     }
 
     private Task getCurrentTask(String currentTaskString) {
@@ -110,12 +160,19 @@ public class SetAssignmentsPropertiesController {
                 (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
                     if (newVal != null) {
                         String currentTaskString = assignmentList.getSelectionModel().getSelectedItem();
-                        Task currentTask = getCurrentTask(currentTaskString);
+                        currentTask = getCurrentTask(currentTaskString);
                         percentageOfCourseGradeSlider.adjustValue(currentTask.getWeightInGrade() * 100);
                         gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
                         assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
+                        setDisable(percentageOfCourseGradeSlider,gradeDueDatePicker,assignmentDueDatePicker,true);
                     }
                 });
+    }
+
+    private void setDisable(Slider s, DatePicker dp1, DatePicker dp2,Boolean b){
+        s.setDisable(b);
+        dp1.setDisable(b);
+        dp2.setDisable(b);
     }
 
 }
