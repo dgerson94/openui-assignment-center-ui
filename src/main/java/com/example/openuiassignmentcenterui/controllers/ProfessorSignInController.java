@@ -2,28 +2,14 @@ package com.example.openuiassignmentcenterui.controllers;
 
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.models.Course;
 import com.example.openuiassignmentcenterui.models.Professor;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
 
 public class ProfessorSignInController {
 

@@ -1,11 +1,7 @@
 package com.example.openuiassignmentcenterui.helpers;
 
-import com.google.gson.JsonArray;
-
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -19,10 +15,11 @@ public class Https {
         StringBuffer response = null;
         if (database == PROFESSOR) {
             URL url = new URL(target);
+            String boundary = "===" + System.currentTimeMillis() + "===";
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             //THIS IS NEEDED FOR EVERY REQUEST TO SERVER//
-            String auth = "p"+ user_name + ":" + password;
+            String auth = "p" + user_name + ":" + password;
             byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
             String authHeader = "Basic " + new String(encodedAuth);
             con.setRequestProperty("Authorization", authHeader);
@@ -37,8 +34,8 @@ public class Https {
                     response.append(inputLine);
                 }
                 in.close();
-           } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                Error e = new Error("Unauthorized","The FullName or Password is incorrect, please try again");
+            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
                 e.raiseError();
                 return null;
             }
@@ -46,12 +43,12 @@ public class Https {
         return response;
     }
 
-    public static StringBuffer httpPost(String user_name, String password, String database, String target, String jsonResponse) throws IOException {
+    public static StringBuffer httpPutJson(String user_name, String password, String database, String target, String jsonResponse) throws IOException {
         //TODO: Need to fix this up.
         StringBuffer response = new StringBuffer();
         URL obj = new URL(target);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("POST");
+        con.setRequestMethod("PUT");
         String auth = "p" + user_name + ":" + password;
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
         String authHeader = "Basic " + new String(encodedAuth);
@@ -61,16 +58,16 @@ public class Https {
 
         // For POST only - START
         OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());
-        String jsonString = jsonResponse.toString();
+        String jsonString = jsonResponse;
         os.write(jsonString);
         os.flush();
         os.close();
         // For POST only - END
 
         int responseCode = con.getResponseCode();
-        System.out.println("POST Response Code :: " + responseCode);
+        System.out.println("Put Response Code :: " + responseCode);
 
-        if (responseCode == HttpURLConnection.HTTP_OK) { //success
+        if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) { //success
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
@@ -85,5 +82,84 @@ public class Https {
     }
 
 
+    public static void httpPutFile(String user_name, String password, String database, String target, File file) throws IOException {
+        String boundary = "===" + System.currentTimeMillis() + "===";
+        URL url = new URL(target);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setDoOutput(true);
+        con.setDoInput(true);
+        //TODO: Add auth info like in other cases.
+        con.setRequestMethod("PUT");
+        String auth = "p" + user_name + ":" + password;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
+        String authHeader = "Basic " + new String(encodedAuth);
+        con.setRequestProperty("Authorization", authHeader);
+        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 
+        // Open output stream to write request body
+        DataOutputStream outputStream = new DataOutputStream(con.getOutputStream());
+
+        // Write multipart/form-data request body
+        outputStream.writeBytes("--" + boundary + "\r\n");
+        outputStream.writeBytes("Content-Disposition: form-data; name=\"file\"; filename=\"" + file.getName() + "\"\r\n");
+        outputStream.writeBytes("\r\n");
+
+        // Write file contents
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] buffer = new byte[1024];
+        int bytesRead;
+        while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        outputStream.writeBytes("\r\n");
+        outputStream.writeBytes("--" + boundary + "--\r\n");
+
+        // Close streams
+        fileInputStream.close();
+        outputStream.flush();
+        outputStream.close();
+
+        // Check response code
+        int responseCode = con.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) {
+            // Read response body
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                System.out.println(inputLine);
+            }
+            in.close();
+            System.out.println("File uploaded successfully!");
+        } else {
+            System.out.println("File upload failed: " + con.getResponseMessage());
+        }
+
+        // Disconnect
+        con.disconnect();
+    }
+
+    public static void httpGetFile(String user_name, String password, String database, String target, File file) throws IOException {
+        URL url = new URL(target);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        String auth = "p" + user_name + ":" + password;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
+        String authHeader = "Basic " + new String(encodedAuth);
+        connection.setRequestProperty("Authorization", authHeader);
+
+        InputStream inputStream = connection.getInputStream();
+        FileOutputStream outputStream = new FileOutputStream(file);
+
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+
+        outputStream.close();
+        inputStream.close();
+
+        System.out.println("File downloaded to: " + file.getAbsolutePath());
+    }
 }

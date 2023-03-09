@@ -57,7 +57,7 @@
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="16.0" GridPane.columnIndex="1">
                      <children>
                         <TextField fx:id="assignmentFileTextField" alignment="CENTER" disable="true" promptText="Please Upload Assignment" />
-                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#uploadFileButtonPressed" text="Upload File" textAlignment="CENTER" />
+                        <Button fx:id="uploadFileButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#uploadFileButtonPressed" text="Upload File" textAlignment="CENTER" />
                      </children>
                   </VBox>
                </children>
