@@ -33,6 +33,8 @@ public class SetCourseRequirementsController {
     @FXML
     private Label numberOfAssignmentsLabel;
 
+    private final String URL_COURSES = "http://localhost:8080/courses";
+
     private static String capitalize(String str) {
         String capitalizedStr = str.substring(0, 1).toUpperCase() + str.substring(1);
         return capitalizedStr;
@@ -46,7 +48,7 @@ public class SetCourseRequirementsController {
             e.raiseError();
         } else {
             String courseId = getCourseId(pickedCourse);
-            StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Https.PROFESSOR, "http://localhost:8080/courses/" + courseId + "/tasks");
+            StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Https.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
             if (!response.toString().equals("[]")) {
                 TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                 };
@@ -102,7 +104,7 @@ public class SetCourseRequirementsController {
         this.user = user;
         String user_name = user.getId();
         String password = user.getPassword();
-        StringBuffer response = Https.httpGet(user_name, password, Https.PROFESSOR, "http://localhost:8080/courses");
+        StringBuffer response = Https.httpGet(user_name, password, Https.PROFESSOR, URL_COURSES);
 
         TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
         };

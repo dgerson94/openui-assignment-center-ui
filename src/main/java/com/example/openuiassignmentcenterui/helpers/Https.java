@@ -3,6 +3,9 @@ package com.example.openuiassignmentcenterui.helpers;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -15,7 +18,6 @@ public class Https {
         StringBuffer response = null;
         if (database == PROFESSOR) {
             URL url = new URL(target);
-            String boundary = "===" + System.currentTimeMillis() + "===";
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             //THIS IS NEEDED FOR EVERY REQUEST TO SERVER//
@@ -138,28 +140,38 @@ public class Https {
         con.disconnect();
     }
 
-    public static void httpGetFile(String user_name, String password, String database, String target, File file) throws IOException {
+    public static File httpGetFile(String user_name, String password, String database, String target) throws IOException {
+        File temp = new File("tmp.txt");
         URL url = new URL(target);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
         String auth = "p" + user_name + ":" + password;
-        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
-        String authHeader = "Basic " + new String(encodedAuth);
-        connection.setRequestProperty("Authorization", authHeader);
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
+        String authHeaderValue = "Basic " + new String(encodedAuth);
+        conn.setRequestProperty("Authorization", authHeaderValue);
 
-        InputStream inputStream = connection.getInputStream();
-        FileOutputStream outputStream = new FileOutputStream(file);
-
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
+        int responseCode = conn.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw new RuntimeException("Failed : HTTP error code : " + responseCode);
         }
 
-        outputStream.close();
-        inputStream.close();
+        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String inputLine;
+        StringBuilder response = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+            System.out.println(inputLine);
+        }
+        System.out.println(response);
+        FileWriter fileWriter = new FileWriter(temp);
+        fileWriter.write(response.toString());
 
-        System.out.println("File downloaded to: " + file.getAbsolutePath());
+        // Close the FileWriter
+        fileWriter.close();
+        in.close();
+
+        conn.disconnect();
+        return temp;
     }
 }

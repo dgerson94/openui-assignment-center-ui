@@ -21,11 +21,10 @@ import java.net.URL;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 import javafx.fxml.Initializable;
 
-public class SetAssignmentsPropertiesController implements Initializable {
+public class SetAssignmentsPropertiesController {
 
     private ArrayList<Task> tasks;
 
@@ -56,6 +55,7 @@ public class SetAssignmentsPropertiesController implements Initializable {
 
     @FXML
     private Button uploadFileButton;
+
 
     @FXML
     void uploadFileButtonPressed(ActionEvent event) {
@@ -129,7 +129,7 @@ public class SetAssignmentsPropertiesController implements Initializable {
         this.user = user;
         this.tasks = tasks;
         this.courseId = courseId;
-        this.file = File.createTempFile("myFile",".txt");
+        this.file = null;
         ObservableList<String> assignments = createObservableList(tasks.size());
         assignmentList.setItems(assignments);
         onItemSelected(assignmentList);
@@ -162,9 +162,8 @@ public class SetAssignmentsPropertiesController implements Initializable {
                         gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
                         assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         try {
-                            Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file" , file);
-                            if (!file.getName().startsWith("myFile"))
-                            assignmentFileTextField.setText(file.getName());
+                           file = Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file");
+                           assignmentFileTextField.setText(file.getName());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -179,20 +178,5 @@ public class SetAssignmentsPropertiesController implements Initializable {
         dp2.setDisable(b);
         btn.setDisable(b);
         //TODO: add a disable to file finder.
-    }
-
-    @Override
-    protected void finalize() throws Throwable {
-        // Close the temporary file when the controller is garbage collected
-        if (file != null) {
-            file.delete();
-            System.out.println("Deleted temporary file: " + file.getAbsolutePath());
-        }
-        super.finalize();
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
     }
 }
