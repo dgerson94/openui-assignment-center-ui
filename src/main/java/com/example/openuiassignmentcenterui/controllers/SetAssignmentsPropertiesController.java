@@ -54,6 +54,10 @@ public class SetAssignmentsPropertiesController {
 
     private static String URL_TASK;
 
+    private boolean updatedJson = false;
+
+    private boolean updatedFile = false;
+
 
     @FXML
     void uploadFileButtonPressed(ActionEvent event) throws IOException {
@@ -62,12 +66,7 @@ public class SetAssignmentsPropertiesController {
         fileChooser.setTitle("Open Assignment File");
         file = fileChooser.showOpenDialog(stage);
         assignmentFileTextField.setText(file.getName());
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line);
-        }
-        reader.close();
+        updatedFile = true;
     }
 
     @FXML
@@ -82,27 +81,44 @@ public class SetAssignmentsPropertiesController {
     @FXML
     void editButtonPressed(ActionEvent event) {
         String pickedTaskName = assignmentList.getSelectionModel().getSelectedItem();
-        Task pickedTask = getTask(Integer.valueOf(pickedTaskName.substring(pickedTaskName.length() - 1)));
+        //Task pickedTask = getTask(Integer.valueOf(pickedTaskName.substring(pickedTaskName.length() - 1)));
         setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, assignmentDueDatePicker, uploadFileButton ,false);
     }
 
-    private Task getTask(Integer pickedTaskName) {
-        Task ret = null;
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getId() == pickedTaskName)
-                ret = tasks.get(i);
-        }
-        return ret;
-    }
+//    private Task getTask(Integer pickedTaskName) {
+//        Task ret = null;
+//        for (int i = 0; i < tasks.size(); i++) {
+//            if (tasks.get(i).getId() == pickedTaskName)
+//                ret = tasks.get(i);
+//        }
+//        return ret;
+//    }
 
     @FXML
     void saveButtonPressed(ActionEvent event) throws IOException {
-        //TODO: Need to have two different actions - One for saving all info in Json and one for sending File.
-        currentTask.setCheckDeadLine(String.valueOf(gradeDueDatePicker.getValue()));
-        currentTask.setSubmissionDeadline(String.valueOf(assignmentDueDatePicker.getValue()));
-        currentTask.setWeightInGrade(percentageOfCourseGradeSlider.getValue());
-        sendJson();
-        sendFile();
+        String newCheckDeadLine = String.valueOf(gradeDueDatePicker.getValue());
+        String newSubmissionDeadline = String.valueOf(assignmentDueDatePicker.getValue());
+        Double newWeightInGrade = percentageOfCourseGradeSlider.getValue() / 100;
+        if(!newWeightInGrade.equals(currentTask.getWeightInGrade())){
+            currentTask.setWeightInGrade(newWeightInGrade);
+            updatedJson = true;
+        }
+        if(!newSubmissionDeadline.equals(currentTask.getSubmissionDeadline().substring(0,10))){
+            currentTask.setSubmissionDeadline(newSubmissionDeadline);
+            updatedJson = true;
+        }
+        if(!newCheckDeadLine.equals(currentTask.getCheckDeadLine().substring(0,10))){
+            currentTask.setCheckDeadLine(newCheckDeadLine);
+            updatedJson = true;
+        }
+        if(updatedJson){
+            sendJson();
+            updatedJson = false;
+        }
+        if (updatedFile){
+            sendFile();
+            updatedFile = false;
+        }
         setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, assignmentDueDatePicker, uploadFileButton, true);
     }
 
@@ -112,7 +128,6 @@ public class SetAssignmentsPropertiesController {
 
     private void sendJson() throws IOException {
         Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade()/100);
-        //tmp.setCourseId(courseId);
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
         StringBuffer response = Https.httpPutJson(user.getId(), user.getPassword(), null,URL_TASK, jsonResponse);
