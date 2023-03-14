@@ -24,6 +24,8 @@ import java.util.List;
 
 public class SetCourseRequirementsController {
     private static final String DEFAULT_DATE = "2023-01-01";
+
+    private static final double DEFAULT_PERCENTAGE = 0.1;
     private Professor user;
     private ArrayList<Course> professorCourses;
     @FXML
@@ -85,7 +87,7 @@ public class SetCourseRequirementsController {
     private ArrayList<Task> makeEmptyTasks(Integer numberOfAssignments) {
         ArrayList<Task> tasks = new ArrayList<>();
         for (int i = 1; i <= numberOfAssignments; i++) {
-            Task temp = new Task(i, DEFAULT_DATE, DEFAULT_DATE, 0.1);
+            Task temp = new Task(i, DEFAULT_DATE, DEFAULT_DATE, DEFAULT_PERCENTAGE);
             tasks.add(temp);
         }
         return tasks;

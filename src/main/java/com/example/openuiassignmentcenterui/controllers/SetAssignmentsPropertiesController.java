@@ -49,6 +49,10 @@ public class SetAssignmentsPropertiesController {
 
     @FXML
     private Button uploadFileButton;
+    
+    private static final String URL_COURSES = "http://localhost:8080/courses/";
+
+    private static String URL_TASK;
 
 
     @FXML
@@ -103,7 +107,7 @@ public class SetAssignmentsPropertiesController {
     }
 
     private void sendFile() throws IOException {
-        Https.httpPutFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file", file);
+        Https.httpPutFile(user.getId(), user.getPassword(), null,URL_TASK +"/file", file);
     }
 
     private void sendJson() throws IOException {
@@ -111,7 +115,7 @@ public class SetAssignmentsPropertiesController {
         //tmp.setCourseId(courseId);
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
-        StringBuffer response = Https.httpPutJson(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1", jsonResponse);
+        StringBuffer response = Https.httpPutJson(user.getId(), user.getPassword(), null,URL_TASK, jsonResponse);
     }
 
     private ObservableList<String> createObservableList(Integer size) {
@@ -160,8 +164,9 @@ public class SetAssignmentsPropertiesController {
                         percentageOfCourseGradeSlider.adjustValue(currentTask.getWeightInGrade() * 100);
                         gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
                         assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
+                        URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
-                           file = Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file");
+                           file = Https.httpGetFile(user.getId(), user.getPassword(), null,URL_TASK + "/file");
                            assignmentFileTextField.setText(file.getName());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
