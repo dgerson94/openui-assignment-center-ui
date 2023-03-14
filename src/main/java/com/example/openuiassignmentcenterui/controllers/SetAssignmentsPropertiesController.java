@@ -1,5 +1,4 @@
 package com.example.openuiassignmentcenterui.controllers;
-
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Task;
@@ -14,15 +13,10 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import java.io.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-
-import javafx.fxml.Initializable;
 
 public class SetAssignmentsPropertiesController {
 
@@ -56,15 +50,22 @@ public class SetAssignmentsPropertiesController {
     @FXML
     private Button uploadFileButton;
 
+    private static String TASK_NAME = "task.txt";
+
 
     @FXML
-    void uploadFileButtonPressed(ActionEvent event) {
+    void uploadFileButtonPressed(ActionEvent event) throws IOException {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Assignment File");
         file = fileChooser.showOpenDialog(stage);
         assignmentFileTextField.setText(file.getName());
-        //TODO: Add name of file to text above button.
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+        reader.close();
     }
 
     @FXML
@@ -162,7 +163,7 @@ public class SetAssignmentsPropertiesController {
                         gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
                         assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         try {
-                           file = Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file");
+                           file = Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file", TASK_NAME);
                            assignmentFileTextField.setText(file.getName());
                         } catch (IOException e) {
                             throw new RuntimeException(e);

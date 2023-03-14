@@ -4,6 +4,7 @@ module com.example.openuiassignmentcenterui {
 
     requires org.controlsfx.controls;
     requires com.google.gson;
+    requires http.request;
 
     opens com.example.openuiassignmentcenterui to javafx.fxml;
     exports com.example.openuiassignmentcenterui;
