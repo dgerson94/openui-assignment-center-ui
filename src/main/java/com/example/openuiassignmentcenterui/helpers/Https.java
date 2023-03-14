@@ -81,47 +81,16 @@ public class Https {
     }
 
 
-    public static void httpPutFile(String user_name, String password, String database, String target, File file) throws IOException {
-//        String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
-//        String CRLF = "\r\n"; // Line separator required by multipart/form-data.
-//        URL url = new URL(target);
-//        // Create an HttpURLConnection object for the URL
-//        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-//        con.setDoOutput(true);
-//        // Set the HTTP request method to POST
-//        //con.setRequestMethod("POST");
-//        String auth = "p" + user_name + ":" + password;
-//        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
-//        String authHeader = "Basic " + new String(encodedAuth);
-//        con.setRequestProperty("Authorization", authHeader);
-//        // Set the Content-Type header to multipart/form-data
-//        con.setRequestProperty("Content-Type", "multipart/form-data");
-//        try (
-//                OutputStream output = con.getOutputStream();
-//                PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, "UTF-8"), true);
-//        ){
-//            writer.append("--" + boundary).append(CRLF);
-//            writer.append("Content-Disposition: form-data; name=\"textFile\"; filename=\"" + file.getName() + "\"").append(CRLF);
-//            writer.append("Content-Type: multipart/form-data; charset=" + "UTF-8").append(CRLF); // Text file itself must be saved in this charset!
-//            writer.append(CRLF).flush();
-//            Files.copy(file.toPath(), output);
-//            output.flush(); // Important before continuing with writer!
-//            writer.append(CRLF).flush(); // CRLF is important! It indicates end of boundary.
-//            writer.append("--" + boundary + "--").append(CRLF).flush();
-//        }
-//        int responseCode = con.getResponseCode();
-//        System.out.println("Post Response Code :: " + responseCode);
-//        con.disconnect();
+    public static void httpPutFile(String user_name, String password, String database, String target, File file) {
         HttpRequest request = HttpRequest.post(target).basic("p"+ user_name , password);
-        request.part("file", file.getAbsolutePath(),file);
-        request.send(file);
+        request.part("file", file.getName(),file);
         if (request.ok())
             System.out.println("Status was updated");
     }
 
 
-    public static File httpGetFile(String user_name, String password, String database, String target, String fileName) throws IOException {
-        File temp = new File(fileName);
+    public static File httpGetFile(String user_name, String password, String database, String target) throws IOException {
+        File temp = null;
         URL url = new URL(target);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -134,6 +103,13 @@ public class Https {
         int responseCode = conn.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
             throw new RuntimeException("Failed : HTTP error code : " + responseCode);
+        }
+
+        String contentDisposition = conn.getHeaderField("Content-Disposition");
+        String fileNameHeader = null;
+        if (contentDisposition != null && contentDisposition.contains("filename=")) {
+            fileNameHeader = contentDisposition.substring(contentDisposition.indexOf("filename=") + 9).replace("\"", "");
+            temp = new File(fileNameHeader);
         }
 
         BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));

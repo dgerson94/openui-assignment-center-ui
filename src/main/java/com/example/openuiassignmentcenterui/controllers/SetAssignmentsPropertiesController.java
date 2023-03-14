@@ -50,8 +50,6 @@ public class SetAssignmentsPropertiesController {
     @FXML
     private Button uploadFileButton;
 
-    private static String TASK_NAME = "task.txt";
-
 
     @FXML
     void uploadFileButtonPressed(ActionEvent event) throws IOException {
@@ -163,7 +161,7 @@ public class SetAssignmentsPropertiesController {
                         gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
                         assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         try {
-                           file = Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file", TASK_NAME);
+                           file = Https.httpGetFile(user.getId(), user.getPassword(), null, "http://localhost:8080/courses/1/tasks/1/file");
                            assignmentFileTextField.setText(file.getName());
                         } catch (IOException e) {
                             throw new RuntimeException(e);
