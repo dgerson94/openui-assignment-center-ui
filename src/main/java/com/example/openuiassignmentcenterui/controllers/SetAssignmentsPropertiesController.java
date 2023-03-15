@@ -24,7 +24,7 @@ public class SetAssignmentsPropertiesController {
 
     private Professor user;
 
-    private File file;
+    private String fileAbsolutePath;
 
     private Integer courseId;
     @FXML
@@ -64,7 +64,8 @@ public class SetAssignmentsPropertiesController {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Assignment File");
-        file = fileChooser.showOpenDialog(stage);
+        File file = fileChooser.showOpenDialog(stage);
+        fileAbsolutePath = file.getAbsolutePath();
         assignmentFileTextField.setText(file.getName());
         updatedFile = true;
     }
@@ -80,19 +81,8 @@ public class SetAssignmentsPropertiesController {
 
     @FXML
     void editButtonPressed(ActionEvent event) {
-        String pickedTaskName = assignmentList.getSelectionModel().getSelectedItem();
-        //Task pickedTask = getTask(Integer.valueOf(pickedTaskName.substring(pickedTaskName.length() - 1)));
         setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, assignmentDueDatePicker, uploadFileButton ,false);
     }
-
-//    private Task getTask(Integer pickedTaskName) {
-//        Task ret = null;
-//        for (int i = 0; i < tasks.size(); i++) {
-//            if (tasks.get(i).getId() == pickedTaskName)
-//                ret = tasks.get(i);
-//        }
-//        return ret;
-//    }
 
     @FXML
     void saveButtonPressed(ActionEvent event) throws IOException {
@@ -123,11 +113,12 @@ public class SetAssignmentsPropertiesController {
     }
 
     private void sendFile() throws IOException {
+        File file = new File(fileAbsolutePath);
         Https.httpPutFile(user.getId(), user.getPassword(), null,URL_TASK +"/file", file);
     }
 
     private void sendJson() throws IOException {
-        Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade()/100);
+        Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade());
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
         StringBuffer response = Https.httpPutJson(user.getId(), user.getPassword(), null,URL_TASK, jsonResponse);
@@ -147,7 +138,6 @@ public class SetAssignmentsPropertiesController {
         this.user = user;
         this.tasks = tasks;
         this.courseId = courseId;
-        this.file = null;
         ObservableList<String> assignments = createObservableList(tasks.size());
         assignmentList.setItems(assignments);
         onItemSelected(assignmentList);
@@ -181,8 +171,9 @@ public class SetAssignmentsPropertiesController {
                         assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
-                           file = Https.httpGetFile(user.getId(), user.getPassword(), null,URL_TASK + "/file");
+                           File file = Https.httpGetFile(user.getId(), user.getPassword(), null,URL_TASK + "/file");
                            assignmentFileTextField.setText(file.getName());
+                           file.delete();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -196,6 +187,5 @@ public class SetAssignmentsPropertiesController {
         dp1.setDisable(b);
         dp2.setDisable(b);
         btn.setDisable(b);
-        //TODO: add a disable to file finder.
     }
 }
