@@ -42,12 +42,12 @@ public class Https {
         return response;
     }
 
-    public static StringBuffer httpPutJson(String user_name, String password, String database, String target, String jsonResponse) throws IOException {
+    public static StringBuffer sendJson(String user_name, String password, String action, String database, String target, String jsonResponse) throws IOException {
         //TODO: Need to fix this up.
         StringBuffer response = new StringBuffer();
         URL obj = new URL(target);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("PUT");
+        con.setRequestMethod(action);
         String auth = "p" + user_name + ":" + password;
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
         String authHeader = "Basic " + new String(encodedAuth);
@@ -64,7 +64,7 @@ public class Https {
         // For POST only - END
 
         int responseCode = con.getResponseCode();
-        System.out.println("Put Response Code :: " + responseCode);
+        System.out.println(action + " Response Code :: " + responseCode);
 
         if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) { //success
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));

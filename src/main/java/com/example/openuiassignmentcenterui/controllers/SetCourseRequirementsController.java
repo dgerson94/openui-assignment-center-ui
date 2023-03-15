@@ -23,7 +23,7 @@ import java.util.List;
 
 
 public class SetCourseRequirementsController {
-    private static final String DEFAULT_DATE = "2023-01-01";
+    private static final String DEFAULT_DATE = "2023-01-01T00:00:00.000+00:00";
 
     private static final double DEFAULT_PERCENTAGE = 0.1;
     private Professor user;
@@ -32,6 +32,8 @@ public class SetCourseRequirementsController {
     private ListView<String> listOfCourses;
     @FXML
     private ChoiceBox<Integer> numberOfAssignmentsPicker;
+    @FXML
+    private Label numberOfAssignmentsWarning;
     @FXML
     private Label numberOfAssignmentsLabel;
 
@@ -64,17 +66,26 @@ public class SetCourseRequirementsController {
                     } else {
                         Integer numberOfAssignments = numberOfAssignmentsPicker.getValue();
                         ArrayList<Task> tasks = makeEmptyTasks(numberOfAssignments);
-                        //TODO: Make a special screen for creating task. Create One at a time.
-                        // Have counter to know how many assignments to create.
+                        postTasks(tasks,courseId);
                         goToSetAssignments(tasks, courseId, event);
                     }
                 } else {
                     numberOfAssignmentsPicker.setVisible(true);
                     numberOfAssignmentsLabel.setVisible(true);
+                    numberOfAssignmentsWarning.setVisible(true);
                 }
             }
         }
     }
+
+    private void postTasks(ArrayList<Task> tasks, String courseId) throws IOException {
+        for (int i = 0; i < tasks.size(); i++){
+            Gson gson = new Gson();
+            String jsonResponse = gson.toJson(tasks.get(i));
+            Https.sendJson(user.getId(),user.getPassword(),"POST",null, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
+        }
+    }
+
 
     private void goToSetAssignments(ArrayList<Task> tasks, String courseId, ActionEvent event) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("set_assignments_properties.fxml"));

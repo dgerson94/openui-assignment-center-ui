@@ -44,6 +44,11 @@
                   <Insets left="8.0" right="8.0" />
                </padding>
             </ChoiceBox>
+            <Label fx:id="numberOfAssignmentsWarning" alignment="CENTER" prefHeight="118.0" prefWidth="157.0" text="Warning! Amount of tasks can't be changed after pressing continue." textAlignment="CENTER" visible="false" wrapText="true">
+               <VBox.margin>
+                  <Insets top="30.0" />
+               </VBox.margin>
+            </Label>
          </children>
       </VBox>
    </children>

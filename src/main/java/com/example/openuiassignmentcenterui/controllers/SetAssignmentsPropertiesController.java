@@ -121,7 +121,7 @@ public class SetAssignmentsPropertiesController {
         Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade());
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
-        StringBuffer response = Https.httpPutJson(user.getId(), user.getPassword(), null,URL_TASK, jsonResponse);
+        StringBuffer response = Https.sendJson(user.getId(), user.getPassword(),"POST", null,URL_TASK, jsonResponse);
     }
 
     private ObservableList<String> createObservableList(Integer size) {
