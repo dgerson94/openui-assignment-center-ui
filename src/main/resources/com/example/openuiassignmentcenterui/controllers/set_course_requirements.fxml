@@ -38,17 +38,17 @@
       </VBox>
       <VBox alignment="CENTER" prefHeight="384.0" prefWidth="192.0" spacing="100.0">
          <children>
-            <Label fx:id="numberOfAssignmentsLabel" alignment="CENTER" prefHeight="34.0" prefWidth="171.0" text="Number Of Assignments" visible="false">
+            <Label fx:id="numberOfTasksLabel" alignment="CENTER" prefHeight="34.0" prefWidth="171.0" text="Number Of Assignments" visible="false">
                <font>
                   <Font name="Apple Chancery" size="13.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="numberOfAssignmentsPicker" prefHeight="26.0" prefWidth="165.0" visible="false">
+            <ChoiceBox fx:id="numberOfTasksPicker" prefHeight="26.0" prefWidth="165.0" visible="false">
                <padding>
                   <Insets left="8.0" right="8.0" />
                </padding>
             </ChoiceBox>
-            <Label fx:id="numberOfAssignmentsWarning" alignment="CENTER" prefHeight="110.0" prefWidth="157.0" text="Warning! Amount of tasks can't be changed after pressing continue." textAlignment="CENTER" textFill="#e10707" visible="false" wrapText="true">
+            <Label fx:id="numberOfTasksWarning" alignment="CENTER" prefHeight="110.0" prefWidth="157.0" text="Warning! Amount of tasks can't be changed after pressing continue." textAlignment="CENTER" textFill="#e10707" visible="false" wrapText="true">
                <VBox.margin>
                   <Insets top="30.0" />
                </VBox.margin>

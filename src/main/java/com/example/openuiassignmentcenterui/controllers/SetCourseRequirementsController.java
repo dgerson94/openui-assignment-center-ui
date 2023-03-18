@@ -20,7 +20,6 @@ import javafx.scene.control.ListView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class SetCourseRequirementsController {
@@ -32,11 +31,11 @@ public class SetCourseRequirementsController {
     @FXML
     private ListView<String> listOfCourses;
     @FXML
-    private ChoiceBox<Integer> numberOfAssignmentsPicker;
+    private ChoiceBox<Integer> numberOfTasksPicker;
     @FXML
-    private Label numberOfAssignmentsWarning;
+    private Label numberOfTasksWarning;
     @FXML
-    private Label numberOfAssignmentsLabel;
+    private Label numberOfTasksLabel;
 
     private final String URL_COURSES = "http://localhost:8080/courses";
 
@@ -54,22 +53,22 @@ public class SetCourseRequirementsController {
                 TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                 };
                 ArrayList<Task> tasks = new Gson().fromJson(String.valueOf(response), courseType);
-                goToSetAssignments(tasks, courseId, event);
+                goToSetTasks(tasks, courseId, event);
             } else {
-                if (numberOfAssignmentsPicker.isVisible()) {
-                    if (numberOfAssignmentsPicker.getValue() == null) {
-                        Error e = new Error("No number selected.", "You did not select how many assignments will be in the course. Please select how many there will be.");
+                if (numberOfTasksPicker.isVisible()) {
+                    if (numberOfTasksPicker.getValue() == null) {
+                        Error e = new Error("No number selected.", "You did not select how many tasks will be in the course. Please select how many there will be.");
                         e.raiseError();
                     } else {
-                        Integer numberOfAssignments = numberOfAssignmentsPicker.getValue();
-                        ArrayList<Task> tasks = makeEmptyTasks(numberOfAssignments);
+                        Integer numberOfTasks = numberOfTasksPicker.getValue();
+                        ArrayList<Task> tasks = makeEmptyTasks(numberOfTasks);
                         postTasks(tasks,courseId);
-                        goToSetAssignments(tasks, courseId, event);
+                        goToSetTasks(tasks, courseId, event);
                     }
                 } else {
-                    numberOfAssignmentsPicker.setVisible(true);
-                    numberOfAssignmentsLabel.setVisible(true);
-                    numberOfAssignmentsWarning.setVisible(true);
+                    numberOfTasksPicker.setVisible(true);
+                    numberOfTasksLabel.setVisible(true);
+                    numberOfTasksWarning.setVisible(true);
                 }
             }
         }
@@ -84,17 +83,17 @@ public class SetCourseRequirementsController {
     }
 
 
-    private void goToSetAssignments(ArrayList<Task> tasks, String courseId, ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("set_assignments_properties.fxml"));
+    private void goToSetTasks(ArrayList<Task> tasks, String courseId, ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("set_tasks_properties.fxml"));
         Parent root = loader.load();
-        SetAssignmentsPropertiesController sapc = loader.getController();
+        SetTasksPropertiesController sapc = loader.getController();
         sapc.setTasks(user, tasks, Integer.valueOf(courseId));
         SceneController.switchToScene(event, root);
     }
 
-    private ArrayList<Task> makeEmptyTasks(Integer numberOfAssignments) {
+    private ArrayList<Task> makeEmptyTasks(Integer numberOfTasks) {
         ArrayList<Task> tasks = new ArrayList<>();
-        for (int i = 1; i <= numberOfAssignments; i++) {
+        for (int i = 1; i <= numberOfTasks; i++) {
             Task temp = new Task(i, DEFAULT_DATE, DEFAULT_DATE, DEFAULT_PERCENTAGE);
             tasks.add(temp);
         }
@@ -114,6 +113,6 @@ public class SetCourseRequirementsController {
         this.user = user;
         professorCourses = Controller.initializeController(user,listOfCourses);
         ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
-        numberOfAssignmentsPicker.setItems(numberOfCourses);
+        numberOfTasksPicker.setItems(numberOfCourses);
     }
 }

@@ -5,7 +5,6 @@ import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -19,7 +18,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class SetAssignmentsPropertiesController {
+public class SetTasksPropertiesController {
 
     private ArrayList<Task> tasks;
 
@@ -34,13 +33,13 @@ public class SetAssignmentsPropertiesController {
     private Task currentTask;
 
     @FXML
-    private DatePicker assignmentDueDatePicker;
+    private DatePicker taskDueDatePicker;
 
     @FXML
-    private TextField assignmentFileTextField;
+    private TextField taskFileTextField;
 
     @FXML
-    private ListView<String> assignmentList;
+    private ListView<String> taskList;
 
     @FXML
     private DatePicker gradeDueDatePicker;
@@ -64,10 +63,10 @@ public class SetAssignmentsPropertiesController {
     void uploadFileButtonPressed(ActionEvent event) throws IOException {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Assignment File");
+        fileChooser.setTitle("Open Task File");
         File file = fileChooser.showOpenDialog(stage);
         fileAbsolutePath = file.getAbsolutePath();
-        assignmentFileTextField.setText(file.getName());
+        taskFileTextField.setText(file.getName());
         updatedFile = true;
     }
 
@@ -82,13 +81,13 @@ public class SetAssignmentsPropertiesController {
 
     @FXML
     void editButtonPressed(ActionEvent event) {
-        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, assignmentDueDatePicker, uploadFileButton ,false);
+        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton ,false);
     }
 
     @FXML
     void saveButtonPressed(ActionEvent event) throws IOException {
         String newCheckDeadLine = String.valueOf(gradeDueDatePicker.getValue());
-        String newSubmissionDeadline = String.valueOf(assignmentDueDatePicker.getValue());
+        String newSubmissionDeadline = String.valueOf(taskDueDatePicker.getValue());
         Double newWeightInGrade = percentageOfCourseGradeSlider.getValue() / 100;
         if(!newWeightInGrade.equals(currentTask.getWeightInGrade())){
             currentTask.setWeightInGrade(newWeightInGrade);
@@ -110,7 +109,7 @@ public class SetAssignmentsPropertiesController {
             sendFile();
             updatedFile = false;
         }
-        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, assignmentDueDatePicker, uploadFileButton, true);
+        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
     }
 
     private void sendFile() throws IOException {
@@ -130,8 +129,8 @@ public class SetAssignmentsPropertiesController {
         this.tasks = tasks;
         this.courseId = courseId;
         ObservableList<String> assignments = Controller.createObservableList(tasks.size());
-        assignmentList.setItems(assignments);
-        onItemSelected(assignmentList);
+        taskList.setItems(assignments);
+        onItemSelected(taskList);
     }
 
 
@@ -155,20 +154,20 @@ public class SetAssignmentsPropertiesController {
         listView.getSelectionModel().selectedItemProperty().addListener(
                 (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
                     if (newVal != null) {
-                        String currentTaskString = assignmentList.getSelectionModel().getSelectedItem();
+                        String currentTaskString = taskList.getSelectionModel().getSelectedItem();
                         currentTask = getCurrentTask(currentTaskString);
                         percentageOfCourseGradeSlider.adjustValue(currentTask.getWeightInGrade() * 100);
                         gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
-                        assignmentDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
+                        taskDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
                            File file = Https.httpGetFile(user.getId(), user.getPassword(), null,URL_TASK + "/file");
-                           assignmentFileTextField.setText(file.getName());
+                           taskFileTextField.setText(file.getName());
                            file.delete();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, assignmentDueDatePicker, uploadFileButton, true);
+                        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
                     }
                 });
     }

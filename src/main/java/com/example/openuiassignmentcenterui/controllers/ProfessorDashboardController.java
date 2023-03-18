@@ -13,10 +13,10 @@ public class ProfessorDashboardController {
     private Professor user;
 
     @FXML
-    void checkAssignmentsButtonPressed(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("check_assignments.fxml"));
+    void checkTasksButtonPressed(ActionEvent event) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("check_tasks.fxml"));
         Parent root = loader.load();
-        CheckAssignmentsController cac = loader.getController();
+        CheckTasksController cac = loader.getController();
         cac.setProfessor(user);
         SceneController.switchToScene(event, root);
     }
