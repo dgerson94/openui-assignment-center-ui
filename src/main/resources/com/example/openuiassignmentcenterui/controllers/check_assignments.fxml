@@ -27,7 +27,7 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="400.0" prefWidth="200.0" spacing="16.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="20.0" prefWidth="103.0" text="Assignment">
+                  <Label fx:id="taskLabel" alignment="CENTER" prefHeight="20.0" prefWidth="103.0" text="Task" visible="false">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -35,12 +35,12 @@
                         <Insets top="16.0" />
                      </VBox.margin>
                   </Label>
-                  <ListView fx:id="assignmentListView" prefHeight="360.0" prefWidth="180.0" />
+                  <ListView fx:id="assignmentListView" prefHeight="360.0" prefWidth="180.0" visible="false" />
                </children>
             </VBox>
             <VBox alignment="CENTER" prefHeight="360.0" prefWidth="180.0" spacing="16.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="23.0" prefWidth="82.0" text="Student">
+                  <Label fx:id="studentLabel" alignment="CENTER" prefHeight="23.0" prefWidth="82.0" text="Student" visible="false">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -48,7 +48,7 @@
                         <Insets top="16.0" />
                      </VBox.margin>
                   </Label>
-                  <ListView fx:id="studentListView" prefHeight="360.0" prefWidth="180.0" />
+                  <ListView fx:id="studentListView" prefHeight="360.0" prefWidth="180.0" visible="false" />
                </children>
             </VBox>
          </children>

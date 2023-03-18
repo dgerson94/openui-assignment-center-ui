@@ -1,4 +1,5 @@
 package com.example.openuiassignmentcenterui.controllers;
+import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Task;
@@ -121,24 +122,14 @@ public class SetAssignmentsPropertiesController {
         Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade());
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
-        StringBuffer response = Https.sendJson(user.getId(), user.getPassword(),"POST", null,URL_TASK, jsonResponse);
-    }
-
-    private ObservableList<String> createObservableList(Integer size) {
-        ObservableList<String> oList = FXCollections.observableArrayList();
-        int count = 1;
-        for (int i = 0; i < size; i++) {
-            oList.add("Assignment " + count);
-            count++;
-        }
-        return oList;
+        StringBuffer response = Https.sendJson(user.getId(), user.getPassword(),"PUT", null,URL_TASK, jsonResponse);
     }
 
     public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId) throws IOException {
         this.user = user;
         this.tasks = tasks;
         this.courseId = courseId;
-        ObservableList<String> assignments = createObservableList(tasks.size());
+        ObservableList<String> assignments = Controller.createObservableList(tasks.size());
         assignmentList.setItems(assignments);
         onItemSelected(assignmentList);
     }

@@ -1,5 +1,6 @@
 package com.example.openuiassignmentcenterui.controllers;
 
+import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Course;
@@ -39,10 +40,6 @@ public class SetCourseRequirementsController {
 
     private final String URL_COURSES = "http://localhost:8080/courses";
 
-    private static String capitalize(String str) {
-        String capitalizedStr = str.substring(0, 1).toUpperCase() + str.substring(1);
-        return capitalizedStr;
-    }
 
     @FXML
     void continueButtonPressed(ActionEvent event) throws IOException {
@@ -51,7 +48,7 @@ public class SetCourseRequirementsController {
             Error e = new Error("No course selected", "You did not select a course, please select a course.");
             e.raiseError();
         } else {
-            String courseId = getCourseId(pickedCourse);
+            String courseId = Controller.getCourseId(pickedCourse,professorCourses);
             StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Https.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
             if (!response.toString().equals("[]")) {
                 TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
@@ -115,38 +112,8 @@ public class SetCourseRequirementsController {
 
     public void setProfessor(Professor user) throws IOException {
         this.user = user;
-        String user_name = user.getId();
-        String password = user.getPassword();
-        StringBuffer response = Https.httpGet(user_name, password, Https.PROFESSOR, URL_COURSES);
-
-        TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
-        };
-        professorCourses = new Gson().fromJson(String.valueOf(response), courseType);
-        ArrayList<String> nameOfCourses = getNameOfCourses(professorCourses);
-
-        ObservableList<String> courses = FXCollections.observableArrayList(nameOfCourses);
+        professorCourses = Controller.initializeController(user,listOfCourses);
         ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
-
-        listOfCourses.setItems(courses);
         numberOfAssignmentsPicker.setItems(numberOfCourses);
     }
-
-    private ArrayList<String> getNameOfCourses(List<Course> professorCourses) {
-        ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i < professorCourses.size(); i++) {
-            list.add(capitalize(professorCourses.get(i).getName()));
-        }
-        return list;
-    }
-
-    private String getCourseId(String picked) {
-        String str = null;
-        for (int i = 0; i < professorCourses.size(); i++) {
-            if (capitalize(professorCourses.get(i).getName()).matches(picked)) {
-                str = professorCourses.get(i).getId().toString();
-            }
-        }
-        return str;
-    }
-
 }
