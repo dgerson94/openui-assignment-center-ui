@@ -2,6 +2,7 @@ package com.example.openuiassignmentcenterui.helpers;
 
 import com.example.openuiassignmentcenterui.models.Course;
 import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.Student;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -52,6 +53,17 @@ public class Controller {
         return str;
     }
 
+    public static String getTaskId(String pickedTask, ArrayList<Task> tasks) {
+        String str = null;
+        for (int i = 0; i < tasks.size(); i++) {
+            String taskId = tasks.get(i).getId().toString();
+            if (taskId.matches(pickedTask)) {
+                str = taskId;
+            }
+        }
+        return str;
+    }
+
     public static ObservableList<String> createObservableList(Integer size) {
         ObservableList<String> oList = FXCollections.observableArrayList();
         int count = 1;
@@ -61,4 +73,14 @@ public class Controller {
         }
         return oList;
     }
+
+    public static ObservableList<String> createObservableStudentList(ArrayList<Student> students) {
+        ObservableList<String> oList = FXCollections.observableArrayList();
+        for (int i = 0; i < students.size(); i++) {
+            oList.add(students.get(i).getId());
+        }
+        return oList;
+    }
 }
+
+
