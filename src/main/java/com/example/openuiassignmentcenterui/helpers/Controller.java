@@ -57,7 +57,7 @@ public class Controller {
         String str = null;
         for (int i = 0; i < tasks.size(); i++) {
             String taskId = tasks.get(i).getId().toString();
-            if (taskId.matches(pickedTask)) {
+            if (("Assignment " + taskId).matches(pickedTask)) {
                 str = taskId;
             }
         }
