@@ -1,9 +1,6 @@
 package com.example.openuiassignmentcenterui.helpers;
 
-import com.example.openuiassignmentcenterui.models.Course;
-import com.example.openuiassignmentcenterui.models.Professor;
-import com.example.openuiassignmentcenterui.models.Student;
-import com.example.openuiassignmentcenterui.models.Task;
+import com.example.openuiassignmentcenterui.models.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
@@ -74,10 +71,10 @@ public class Controller {
         return oList;
     }
 
-    public static ObservableList<String> createObservableStudentList(ArrayList<Student> students) {
+    public static ObservableList<String> createObservableStudentList(ArrayList<Submission> submissions) {
         ObservableList<String> oList = FXCollections.observableArrayList();
-        for (int i = 0; i < students.size(); i++) {
-            oList.add(students.get(i).getId());
+        for (int i = 0; i < submissions.size(); i++) {
+            oList.add(submissions.get(i).getStudentId());
         }
         return oList;
     }
