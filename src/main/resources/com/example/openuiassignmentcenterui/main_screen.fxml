@@ -36,7 +36,7 @@
                   <Font name="Damascus Regular" size="14.0" />
                </font>
             </Label>
-            <Label text="Student pess button below" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+            <Label text="Student press button below" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                <font>
                   <Font name="Damascus Regular" size="14.0" />
                </font>

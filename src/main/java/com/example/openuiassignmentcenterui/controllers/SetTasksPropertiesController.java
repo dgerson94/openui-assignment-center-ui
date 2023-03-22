@@ -161,6 +161,7 @@ public class SetTasksPropertiesController {
                         taskDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
+                            //TODO: Deal with a null file if that is an option.
                            File file = Https.httpGetFile(user.getId(), user.getPassword(), null,URL_TASK + "/file");
                            taskFileTextField.setText(file.getName());
                            file.delete();
