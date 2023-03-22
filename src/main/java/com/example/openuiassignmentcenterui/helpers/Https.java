@@ -84,8 +84,12 @@ public class Https {
     public static void httpPutFile(String user_name, String password, String database, String target, File file) {
         HttpRequest request = HttpRequest.post(target).basic("p"+ user_name , password);
         request.part("file", file.getName(),file);
-        if (request.ok())
-            System.out.println("Status was updated");
+        if (request.ok() || request.created())
+            System.out.println(file.getName() + " was uploaded.");
+            //TODO:add a popup declaring a successful upload
+        else
+            System.out.println("We were not able to upload " + file.getName());
+            //TODO:add a popup declaring upload didn't succeed.
     }
 
 

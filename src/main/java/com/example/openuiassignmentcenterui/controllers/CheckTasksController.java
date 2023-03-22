@@ -34,6 +34,7 @@ public class CheckTasksController {
 
     private String pickedCourse;
     private String pickedTask;
+    //pickedStudent is essentially the id, they are both just a number
     private String pickedStudent;
 
     private String courseId;
@@ -61,6 +62,11 @@ public class CheckTasksController {
                 e.raiseError();
             } else {
                 //implement opening check task controller with correct info.
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("check_task.fxml"));
+                Parent root = loader.load();
+                CheckTaskController ctc = loader.getController();
+                ctc.setController(user, pickedStudent, taskId, courseId);
+                SceneController.switchToScene(event, root);
             }
         } else {
             //In Case that taskListView is enabled we want to take the selected task and get relevant students.
