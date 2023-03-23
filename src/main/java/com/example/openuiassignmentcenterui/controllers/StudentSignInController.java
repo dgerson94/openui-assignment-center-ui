@@ -1,7 +1,14 @@
 package com.example.openuiassignmentcenterui.controllers;
 
+import com.example.openuiassignmentcenterui.helpers.Controller;
+import com.example.openuiassignmentcenterui.helpers.Error;
+import com.example.openuiassignmentcenterui.helpers.Https;
+import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.Student;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -23,51 +30,27 @@ public class StudentSignInController {
 
     @FXML
     void logonButtonPressed(ActionEvent event) throws IOException {
-        String user_name = full_name.getText();
-        String password = passwordField.getText();
-////       Note that I have changed the student on server to get the answer I want, will need to make sure Matan changes
-//        also. Also need to deal with the answer in a different way.
-//        Boolean succesful_logon = check_for_students(user_name,password);
-        Boolean succesful_logon = true;
-        if (succesful_logon){
-            SceneController.switchToScene(event,"student_dashboard.fxml");
+        if (full_name.getText().matches("")){
+            Error e = new Error();
+            e.raiseError();
+        } else if (passwordField.getText().matches("")) {
+            Error e = new Error("No password", "You didn't put in any password, please enter a password.");
+            e.raiseError();
         }
-        else{
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("Incorrect Password");
-            alert.setContentText("This password is incorrect, please check the name and password.");
-            alert.showAndWait();
+        else {
+            //TODO: Used a professor, need to create a user model and use it for sign in information for both, will make less code.
+            String user_name = full_name.getText();
+            String password = passwordField.getText();
+            StringBuffer response = Https.httpGet(user_name, password, Controller.STUDENT, "http://localhost:8080/courses");
+            if (response != null) {
+                Professor user = Controller.createUser(user_name, password);
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
+                Parent root = loader.load();
+                StudentDashboardController sdc = loader.getController();
+                sdc.setUser(user);
+                SceneController.switchToScene(event, root);
+
+            }
         }
     }
-
-    private Boolean check_for_students(String name,String password) throws IOException {
-        URL url = new URL("http://localhost:8080/students?id=1");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        // optional default is GET
-        conn.setRequestProperty("Content-Type", "application/json");
-
-        int responseCode = conn.getResponseCode();
-        System.out.println("\nSending 'GET' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
-
-        BufferedReader in = new BufferedReader(
-                new InputStreamReader(conn.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        //print result
-        String answer = (response.toString());
-        System.out.println(answer);
-        if (answer.contains(name) && answer.contains(password))
-            return true;
-        return false;
-    }
-
 }

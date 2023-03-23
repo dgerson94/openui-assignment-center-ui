@@ -1,10 +1,15 @@
 package com.example.openuiassignmentcenterui.helpers;
 
+import com.example.openuiassignmentcenterui.controllers.ProfessorDashboardController;
+import com.example.openuiassignmentcenterui.controllers.SceneController;
 import com.example.openuiassignmentcenterui.models.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 
 import java.io.IOException;
@@ -12,11 +17,13 @@ import java.util.ArrayList;
 
 public class Controller {
     public static final String URL_COURSES = "http://localhost:8080/courses";
+    public static final String STUDENT = "student";
+    public static final String PROFESSOR = "professor";
 
     public static ArrayList<Course> initializeController(Professor user, ListView<String> listOfCourses) throws IOException {
         String user_name = user.getId();
         String password = user.getPassword();
-        StringBuffer response = Https.httpGet(user_name, password, Https.PROFESSOR, URL_COURSES);
+        StringBuffer response = Https.httpGet(user_name, password, Controller.PROFESSOR, URL_COURSES);
         TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
         };
         ArrayList<Course> professorCourses = new Gson().fromJson(String.valueOf(response), courseType);
@@ -77,6 +84,11 @@ public class Controller {
             oList.add(submissions.get(i).getStudentId());
         }
         return oList;
+    }
+
+    public static Professor createUser (String user_name, String password){
+        Professor professor = new Professor(user_name,password);
+        return professor;
     }
 }
 

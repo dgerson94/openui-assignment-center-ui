@@ -13,31 +13,33 @@ public class Https {
 
     public static StringBuffer httpGet(String user_name, String password, String database, String target) throws IOException {
         StringBuffer response = null;
-        if (database == PROFESSOR) {
-            URL url = new URL(target);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            //THIS IS NEEDED FOR EVERY REQUEST TO SERVER//
-            String auth = "p" + user_name + ":" + password;
-            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
-            String authHeader = "Basic " + new String(encodedAuth);
-            con.setRequestProperty("Authorization", authHeader);
-            int responseCode = con.getResponseCode();
-            System.out.println("GET Response Code :: " + responseCode);
-            if (responseCode == HttpURLConnection.HTTP_OK) { // success, need to add error for failure
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                response = new StringBuffer();
+        String auth;
+        URL url = new URL(target);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        //THIS IS NEEDED FOR EVERY REQUEST TO SERVER//
+        if (database == PROFESSOR)
+            auth = "p" + user_name + ":" + password;
+        else
+            auth = "s" + user_name + ":" + password;
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
+        String authHeader = "Basic " + new String(encodedAuth);
+        con.setRequestProperty("Authorization", authHeader);
+        int responseCode = con.getResponseCode();
+        System.out.println("GET Response Code :: " + responseCode);
+        if (responseCode == HttpURLConnection.HTTP_OK) { // success, need to add error for failure
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            response = new StringBuffer();
 
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
-                e.raiseError();
-                return null;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
+            in.close();
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
+            e.raiseError();
+            return null;
         }
         return response;
     }
@@ -89,7 +91,7 @@ public class Https {
             //TODO:add a popup declaring a successful upload
         else
             System.out.println("We were not able to upload " + file.getName());
-            //TODO:add a popup declaring upload didn't succeed.
+        //TODO:add a popup declaring upload didn't succeed.
     }
 
 
