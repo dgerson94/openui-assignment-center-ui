@@ -82,7 +82,7 @@ public class CheckTasksController {
                         TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
                         };
                         ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(responseStudents), submissionType);
-                        update_lists_forward(studentListView,taskListView, Controller.createObservableStudentList(submissions));
+                        Controller.update_lists_forward(studentListView,taskListView, Controller.createObservableStudentList(submissions));
                     } else {
                         Error e = new Error("No students in this course.", "Call the rector and complain that no one signed up for your course.");
                         e.raiseError();
@@ -101,7 +101,7 @@ public class CheckTasksController {
                         TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                         };
                         tasks = new Gson().fromJson(String.valueOf(responseTasks), courseType);
-                        update_lists_forward(taskListView, courseListView, Controller.createObservableList(tasks.size()));
+                        Controller.update_lists_forward(taskListView, courseListView, Controller.createObservableList(tasks.size()));
                     } else {
                         Error e = new Error("No tasks in this course.", "You have not set any tasks for this course yet. How can your students do work you didn't assign?");
                         e.raiseError();
@@ -111,28 +111,14 @@ public class CheckTasksController {
         }
     }
 
-    private void update_lists_forward(ListView<String> newList, ListView<String> oldList, ObservableList<String> newOList) {
-        newList.setItems(newOList);
-        newList.refresh();
-        newList.setDisable(false);
-        oldList.setDisable(true);
-    }
-
-    private void update_lists_backwards(ListView<String> newList, ListView<String> oldList){
-        oldList.setItems(null);
-        oldList.refresh();
-        oldList.setDisable(true);
-        newList.setDisable(false);
-    }
-
 
     @FXML
     void backButtonPressed(ActionEvent event) throws IOException {
         if (!studentListView.isDisabled()){
-            update_lists_backwards(taskListView,studentListView);
+            Controller.update_lists_backwards(taskListView,studentListView);
         } else if (!taskListView.isDisabled()) {
             tasks = null;
-            update_lists_backwards(courseListView,taskListView);
+            Controller.update_lists_backwards(courseListView,taskListView);
         } else  {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
             Parent root = loader.load();

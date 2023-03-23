@@ -93,7 +93,7 @@ public class CheckTaskController {
         TextArea fileText = new TextArea();
         fileText.setWrapText(true);
         fileText.setStyle("-fx-font-size: 16px; -fx-text-alignment: center;");
-        fileText.setText(readText(tmp));
+        fileText.setText(Controller.readText(tmp));
         fileText.setDisable(true);
         VBox root = new VBox(10,fileText);
         root.setAlignment(Pos.CENTER);
@@ -111,21 +111,6 @@ public class CheckTaskController {
         popup.show();
     }
 
-    private String readText(File tmp) {
-        try (BufferedReader br = new BufferedReader(new FileReader(tmp))) {
-            String text = "";
-            String str = "";
-            String line;
-            while ((line = br.readLine()) != null) {
-                text = str.concat(line);
-            }
-            return text;
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
-        return "Error reading file. Please try again.";
-    }
-
     public void setController(Professor user, String studentId, String taskId, String courseId) throws IOException {
         this.user = user;
         this.studentId = studentId;
@@ -141,7 +126,7 @@ public class CheckTaskController {
             TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
             };
             ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(response), submissionType);
-            //for now assume there is only one answer, maybe in future make a decision of sorts.
+            //for now assume there is only one answer, maybe in future make a decision of sorts. Need to fix always true.
             String grade = submissions.get(0).getGrade().toString();
             if (grade != null) {
                 gradeTextField.setText(grade);

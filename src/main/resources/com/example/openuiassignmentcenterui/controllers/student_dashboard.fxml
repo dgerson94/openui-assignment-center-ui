@@ -37,12 +37,12 @@
          </padding>
          <children>
             <ListView fx:id="coursesViewList" prefHeight="200.0" prefWidth="200.0" />
-            <ListView fx:id="tasksViewList" prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="tasksViewList" disable="true" prefHeight="200.0" prefWidth="200.0" />
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#logoutButtonPressed" text="Logout" />
+            <Button mnemonicParsing="false" onAction="#backButtonPressed" text="Back" />
             <Button alignment="CENTER" mnemonicParsing="false" onAction="#continueButtonPressed" text="Continue" />
          </children>
       </HBox>

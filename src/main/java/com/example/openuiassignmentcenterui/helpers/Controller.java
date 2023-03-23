@@ -12,6 +12,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -89,6 +92,35 @@ public class Controller {
     public static Professor createUser (String user_name, String password){
         Professor professor = new Professor(user_name,password);
         return professor;
+    }
+
+    public static void update_lists_forward(ListView<String> newList, ListView<String> oldList, ObservableList<String> newOList) {
+        newList.setItems(newOList);
+        newList.refresh();
+        newList.setDisable(false);
+        oldList.setDisable(true);
+    }
+
+    public static void update_lists_backwards(ListView<String> newList, ListView<String> oldList){
+        oldList.setItems(null);
+        oldList.refresh();
+        oldList.setDisable(true);
+        newList.setDisable(false);
+    }
+
+    public static String readText(File tmp) {
+        try (BufferedReader br = new BufferedReader(new FileReader(tmp))) {
+            String text = "";
+            String str = "";
+            String line;
+            while ((line = br.readLine()) != null) {
+                text = str.concat(line);
+            }
+            return text;
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return "Error reading file. Please try again.";
     }
 }
 
