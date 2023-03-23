@@ -67,7 +67,7 @@ public class CheckTaskController {
         if (gradeChange){
             String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId +"/submissions/" + studentId +"/grade";
             String grade = gradeTextField.getText();
-            Https.sendJson(user.getId(),user.getPassword(),"POST",Https.PROFESSOR, target, grade);
+            Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, target, grade);
         }
     }
 
@@ -79,7 +79,7 @@ public class CheckTaskController {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/feedbackFile";
-            Https.httpPutFile(user.getId(), user.getPassword(), Https.PROFESSOR, target, file);
+            Https.httpPutFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target, file);
         }
         disable();
     }
@@ -89,7 +89,7 @@ public class CheckTaskController {
         //TODO: Need to fix layout so text is in the middle. Code here didn't work.
         File tmp;
         String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/file";
-        tmp = Https.httpGetFile(user.getId(),user.getPassword(),Https.PROFESSOR,target);
+        tmp = Https.httpGetFile(user.getId(),user.getPassword(),Controller.PROFESSOR,target);
         TextArea fileText = new TextArea();
         fileText.setWrapText(true);
         fileText.setStyle("-fx-font-size: 16px; -fx-text-alignment: center;");
@@ -136,7 +136,7 @@ public class CheckTaskController {
     }
 
     private void setGrade(String target) throws IOException {
-        StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Https.PROFESSOR, target);
+        StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Controller.PROFESSOR, target);
         if (!response.toString().equals("[]")) {
             TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
             };

@@ -8,20 +8,14 @@ import java.util.Base64;
 import com.github.kevinsawicki.http.HttpRequest;
 public class Https {
 
-    public static final String PROFESSOR = "professor";
-    private static final String USER_AGENT = "Mozilla/5.0";
-
+    private static final String PROFESSOR = "professor";
     public static StringBuffer httpGet(String user_name, String password, String database, String target) throws IOException {
         StringBuffer response = null;
-        String auth;
         URL url = new URL(target);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         //THIS IS NEEDED FOR EVERY REQUEST TO SERVER//
-        if (database == PROFESSOR)
-            auth = "p" + user_name + ":" + password;
-        else
-            auth = "s" + user_name + ":" + password;
+        String auth = createAuth(database,user_name,password);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
         String authHeader = "Basic " + new String(encodedAuth);
         con.setRequestProperty("Authorization", authHeader);
@@ -50,7 +44,7 @@ public class Https {
         URL obj = new URL(target);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod(action);
-        String auth = "p" + user_name + ":" + password;
+        String auth = createAuth(database,user_name,password);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
         String authHeader = "Basic " + new String(encodedAuth);
         con.setRequestProperty("Authorization", authHeader);
@@ -84,7 +78,9 @@ public class Https {
 
 
     public static void httpPutFile(String user_name, String password, String database, String target, File file) {
-        HttpRequest request = HttpRequest.post(target).basic("p"+ user_name , password);
+        String auth = createAuth(database,user_name,password);
+        String[] authInfo = auth.split(":");
+        HttpRequest request = HttpRequest.post(target).basic(authInfo[0],authInfo[1]);
         request.part("file", file.getName(),file);
         if (request.ok() || request.created())
             System.out.println(file.getName() + " was uploaded.");
@@ -101,7 +97,7 @@ public class Https {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
 
-        String auth = "p" + user_name + ":" + password;
+        String auth = createAuth(database,user_name,password);
         byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.UTF_8));
         String authHeaderValue = "Basic " + new String(encodedAuth);
         conn.setRequestProperty("Authorization", authHeaderValue);
@@ -135,5 +131,14 @@ public class Https {
 
         conn.disconnect();
         return temp;
+    }
+
+    private static String createAuth(String database, String user_name, String password){
+        String auth;
+        if (database == PROFESSOR)
+            auth = "p" + user_name + ":" + password;
+        else
+            auth = "s" + user_name + ":" + password;
+        return auth;
     }
 }

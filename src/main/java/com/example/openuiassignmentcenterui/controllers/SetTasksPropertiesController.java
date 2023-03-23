@@ -114,14 +114,14 @@ public class SetTasksPropertiesController {
 
     private void sendFile() throws IOException {
         File file = new File(fileAbsolutePath);
-        Https.httpPutFile(user.getId(), user.getPassword(), null,URL_TASK +"/file", file);
+        Https.httpPutFile(user.getId(), user.getPassword(), Controller.PROFESSOR,URL_TASK +"/file", file);
     }
 
     private void sendJson() throws IOException {
         Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade());
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
-        StringBuffer response = Https.sendJson(user.getId(), user.getPassword(),"PUT", null,URL_TASK, jsonResponse);
+        StringBuffer response = Https.sendJson(user.getId(), user.getPassword(),"PUT", Controller.PROFESSOR,URL_TASK, jsonResponse);
     }
 
     public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId) throws IOException {
@@ -161,12 +161,14 @@ public class SetTasksPropertiesController {
                         taskDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
-                            //TODO: Deal with a null file if that is an option.
-                           File file = Https.httpGetFile(user.getId(), user.getPassword(), null,URL_TASK + "/file");
+                            //TODO: Deal with a null file if that is an option. What I have now isn't good
+                           File file = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR,URL_TASK + "/file");
                            taskFileTextField.setText(file.getName());
                            file.delete();
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            System.out.println("Found no file on database.");
+                            taskFileTextField.clear();
+                            taskFileTextField.setPromptText("Please Upload Text");
                         }
                         setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
                     }

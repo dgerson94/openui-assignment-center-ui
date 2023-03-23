@@ -77,7 +77,7 @@ public class CheckTasksController {
                     e.raiseError();
                 } else {
                     taskId = Controller.getTaskId(pickedTask, tasks);
-                    StringBuffer responseStudents = Https.httpGet(user.getId(), user.getPassword(), Https.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions");
+                    StringBuffer responseStudents = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions");
                     if (!responseStudents.toString().equals("[]")) {
                         TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
                         };
@@ -96,7 +96,7 @@ public class CheckTasksController {
                     e.raiseError();
                 } else {
                     courseId = Controller.getCourseId(pickedCourse, professorCourses);
-                    StringBuffer responseTasks = Https.httpGet(user.getId(), user.getPassword(), Https.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
+                    StringBuffer responseTasks = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
                     if (!responseTasks.toString().equals("[]")) {
                         TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                         };

@@ -48,7 +48,7 @@ public class SetCourseRequirementsController {
             e.raiseError();
         } else {
             String courseId = Controller.getCourseId(pickedCourse,professorCourses);
-            StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Https.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
+            StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
             if (!response.toString().equals("[]")) {
                 TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                 };
@@ -78,7 +78,7 @@ public class SetCourseRequirementsController {
         for (int i = 0; i < tasks.size(); i++){
             Gson gson = new Gson();
             String jsonResponse = gson.toJson(tasks.get(i));
-            Https.sendJson(user.getId(),user.getPassword(),"POST",null, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
+            Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
         }
     }
 
