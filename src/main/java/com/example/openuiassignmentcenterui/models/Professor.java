@@ -3,14 +3,16 @@ package com.example.openuiassignmentcenterui.models;
 
 import java.util.Set;
 
-public class Professor{
+public class Professor {
 
     private String id;
 
     private String password;
-    private Set <Course> courses;
+    private Set<Course> courses;
 
-    public Professor(){}
+    public Professor() {
+    }
+
     public Professor(String id, String password) {
         this.id = id;
         this.password = password;
@@ -41,8 +43,6 @@ public class Professor{
     public void setCourses(Set<Course> courses) {
         this.courses = courses;
     }
-
-
 
 
 }

@@ -84,9 +84,8 @@ public class StudentTaskDashboardController {
         if (response != null) {
             Submission submission = new Gson().fromJson(String.valueOf(response),Submission.class);
             //for now assume there is only one answer, maybe in future make a decision of sorts. Need to fix always error.
-            String grade = submission.getGrade().toString();
-            if (grade != null) {
-                gradeTextField.setText(grade);
+            if (submission.getGrade() != null){
+                gradeTextField.setText(submission.getGrade().toString());
             }
         }
     }

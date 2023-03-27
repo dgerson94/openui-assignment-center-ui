@@ -11,15 +11,15 @@ public class Course {
     //TODO: Need to learn what to do with null values so there won't be an error.
     private transient Collection<Task> tasks;
 
-    public Course(){
+    public Course() {
 
     }
 
-    public Course(Integer id, String name,String professorId) {
+    public Course(Integer id, String name, String professorId) {
         this.id = id;
         this.name = name;
-        this.professorId=professorId;
-        this.tasksSet=false;
+        this.professorId = professorId;
+        this.tasksSet = false;
     }
 
     public Integer getId() {

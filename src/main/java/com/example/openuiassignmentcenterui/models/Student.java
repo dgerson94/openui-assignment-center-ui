@@ -4,7 +4,8 @@ public class Student {
     private String id;
     private String password;
 
-    public Student(){}
+    public Student() {
+    }
 
     public Student(String id, String password) {
         this.id = id;

@@ -1,7 +1,5 @@
 package com.example.openuiassignmentcenterui.models;
 
-import java.text.DateFormat;
-
 public class Submission {
     private String id;
     private String submitDate;

@@ -12,7 +12,8 @@ public class Task {
 
     private Integer courseId;
 
-    public Task(){}
+    public Task() {
+    }
 
     public Task(Integer id, String submissionDeadline, String checkDeadLine, Double weightInGrade) {
         this.id = id;
@@ -49,11 +50,17 @@ public class Task {
         return weightInGrade;
     }
 
-    public void setWeightInGrade(Double weightInGrade) { this.weightInGrade = weightInGrade; }
+    public void setWeightInGrade(Double weightInGrade) {
+        this.weightInGrade = weightInGrade;
+    }
 
-    public void setCourseId (Integer courseId) { this.courseId = courseId; }
+    public void setCourseId(Integer courseId) {
+        this.courseId = courseId;
+    }
 
-    public Integer getCourseId() { return courseId; }
+    public Integer getCourseId() {
+        return courseId;
+    }
 
 //    public File getFile() {
 //        return file;
