@@ -13,7 +13,7 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.StudentSignInController">
    <children>
-      <Label alignment="CENTER" prefHeight="58.0" prefWidth="189.0" text="Student Sign In " textAlignment="CENTER">
+      <Label alignment="CENTER" prefHeight="58.0" prefWidth="297.0" styleClass="title" stylesheets="@Style.css" text="Student Sign In " textAlignment="CENTER">
          <VBox.margin>
             <Insets />
          </VBox.margin>
@@ -47,7 +47,7 @@
             <Insets bottom="8.0" left="8.0" right="8.0" top="16.0" />
          </padding>
       </GridPane>
-      <Button mnemonicParsing="false" onAction="#logonButtonPressed" prefHeight="26.0" prefWidth="91.0" text="Logon" />
+      <Button mnemonicParsing="false" onAction="#logonButtonPressed" prefHeight="26.0" prefWidth="91.0" stylesheets="@Style.css" text="Logon" />
    </children>
    <padding>
       <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />

@@ -11,10 +11,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" spacing="75.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.StudentTaskDashboardController">
    <children>
-      <Label text="Student Task Dashboard">
+      <Label alignment="CENTER" styleClass="title" stylesheets="@Style.css" text="Student Task Dashboard">
          <font>
             <Font name="AppleMyungjo Regular" size="36.0" />
          </font>
@@ -30,14 +29,14 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label prefHeight="26.0" prefWidth="62.0" text="Grade:">
+            <Label alignment="CENTER" prefHeight="26.0" prefWidth="62.0" styleClass="title_small" stylesheets="@Style.css" text="Grade:">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
             <TextField fx:id="gradeTextField" alignment="CENTER" disable="true" editable="false" prefHeight="26.0" prefWidth="198.0" text="No Grade Yet" GridPane.columnIndex="1" />
-            <Button mnemonicParsing="false" onAction="#viewFeedbackFilePressed" text="ViewFeedbackFile" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" onAction="#uploadFileButtonPressed" text="UploadAnswerFile" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#viewFeedbackFilePressed" stylesheets="@Style.css" text="ViewFeedbackFile" GridPane.rowIndex="2" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#uploadFileButtonPressed" stylesheets="@Style.css" text="UploadAnswerFile" GridPane.columnIndex="1" GridPane.rowIndex="2" />
          </children>
          <padding>
             <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -45,7 +44,7 @@
       </GridPane>
       <HBox alignment="CENTER" prefHeight="52.0" prefWidth="584.0" spacing="100.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#backButtonPressed" text="Back" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#backButtonPressed" stylesheets="@Style.css" text="Back" />
          </children>
       </HBox>
    </children>

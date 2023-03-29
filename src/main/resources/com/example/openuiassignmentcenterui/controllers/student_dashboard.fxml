@@ -10,7 +10,7 @@
 
 <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.StudentDashboardController">
    <children>
-      <Label text="Student Dashboard">
+      <Label styleClass="title" stylesheets="@Style.css" text="Student Dashboard">
          <font>
             <Font name="Optima Regular" size="36.0" />
          </font>
@@ -19,12 +19,12 @@
          </padding></Label>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="150.0">
          <children>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="140.0" text="Courses">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="140.0" styleClass="title" stylesheets="@Style.css" text="Courses">
                <font>
                   <Font size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="170.0" text="Tasks">
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="170.0" styleClass="title" stylesheets="@Style.css" text="Tasks">
                <font>
                   <Font size="24.0" />
                </font>
@@ -42,8 +42,8 @@
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="100.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#backButtonPressed" text="Back" />
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#continueButtonPressed" text="Continue" />
+            <Button mnemonicParsing="false" onAction="#backButtonPressed" stylesheets="@Style.css" text="Back" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#continueButtonPressed" stylesheets="@Style.css" text="Continue" />
          </children>
       </HBox>
    </children>

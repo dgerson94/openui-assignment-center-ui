@@ -11,9 +11,9 @@
 
 <!--Make sure this is the same as FXML in Controllers Folder-->
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="150.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.MainScreenController">
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="150.0" prefWidth="450.0" stylesheets="@controllers/Style.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.openuiassignmentcenterui.controllers.MainScreenController">
    <children>
-      <Label text="OpenU Assignment Center">
+      <Label styleClass="title" stylesheets="@controllers/Style.css" text="OpenU Assignment Center">
          <font>
             <Font name="Chalkboard" size="36.0" />
          </font>
@@ -31,18 +31,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Professor press button below" GridPane.halignment="CENTER">
-               <font>
-                  <Font name="Damascus Regular" size="14.0" />
-               </font>
-            </Label>
-            <Label text="Student press button below" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-               <font>
-                  <Font name="Damascus Regular" size="14.0" />
-               </font>
-            </Label>
             <Button mnemonicParsing="false" onAction="#professorButtonPressed" text="Professor" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" onAction="#studentButtonPressed" text="Student" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" onAction="#studentButtonPressed" stylesheets="@controllers/Style.css" text="Student Login" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
          </children>
          <padding>
             <Insets bottom="8.0" left="8.0" right="8.0" top="25.0" />

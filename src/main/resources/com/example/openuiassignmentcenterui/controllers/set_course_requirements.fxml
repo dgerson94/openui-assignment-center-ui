@@ -13,7 +13,7 @@
    <children>
       <VBox alignment="CENTER" prefHeight="384.0" prefWidth="177.0" spacing="16.0">
          <children>
-            <Label alignment="CENTER" prefHeight="17.0" prefWidth="63.0" text="Courses">
+            <Label alignment="CENTER" prefHeight="23.0" prefWidth="89.0" styleClass="title_small" stylesheets="@Style.css" text="Courses">
                <font>
                   <Font name="Apple Chancery" size="13.0" />
                </font>
@@ -23,22 +23,22 @@
       </VBox>
       <VBox alignment="CENTER" prefHeight="384.0" prefWidth="219.0" spacing="280.0">
          <children>
-            <Label alignment="CENTER" prefHeight="23.0" prefWidth="201.0" text="Set Course Requirments" textAlignment="CENTER">
+            <Label alignment="CENTER" prefHeight="47.0" prefWidth="278.0" styleClass="title_small" stylesheets="@Style.css" text="Set Course Requirments" textAlignment="CENTER">
                <font>
                   <Font name="Apple Chancery" size="16.0" />
                </font>
             </Label>
             <HBox alignment="CENTER" prefHeight="65.0" prefWidth="199.0" spacing="50.0">
                <children>
-                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#continueButtonPressed" text="Continue" />
-                  <Button mnemonicParsing="false" onAction="#backButtonPressed" prefWidth="67.0" text="Back" />
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#continueButtonPressed" stylesheets="@Style.css" text="Continue" />
+                  <Button mnemonicParsing="false" onAction="#backButtonPressed" prefWidth="67.0" stylesheets="@Style.css" text="Back" />
                </children>
             </HBox>
          </children>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="384.0" prefWidth="192.0" spacing="100.0">
+      <VBox alignment="CENTER" prefHeight="384.0" prefWidth="192.0" spacing="100.0" visible="false">
          <children>
-            <Label fx:id="numberOfTasksLabel" alignment="CENTER" prefHeight="34.0" prefWidth="171.0" text="Number Of Assignments" visible="false">
+            <Label fx:id="numberOfTasksLabel" alignment="CENTER" prefHeight="23.0" prefWidth="224.0" styleClass="title_small" stylesheets="@Style.css" text="Number Of Assignments">
                <font>
                   <Font name="Apple Chancery" size="13.0" />
                </font>
