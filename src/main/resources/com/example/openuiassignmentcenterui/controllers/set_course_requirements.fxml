@@ -36,9 +36,9 @@
             </HBox>
          </children>
       </VBox>
-      <VBox alignment="CENTER" prefHeight="384.0" prefWidth="192.0" spacing="100.0" visible="false">
+      <VBox alignment="CENTER" prefHeight="384.0" prefWidth="192.0" spacing="100.0">
          <children>
-            <Label fx:id="numberOfTasksLabel" alignment="CENTER" prefHeight="23.0" prefWidth="224.0" styleClass="title_small" stylesheets="@Style.css" text="Number Of Assignments">
+            <Label fx:id="numberOfTasksLabel" alignment="CENTER" prefHeight="23.0" prefWidth="224.0" styleClass="title_small" stylesheets="@Style.css" text="Number Of Assignments" visible="false">
                <font>
                   <Font name="Apple Chancery" size="13.0" />
                </font>

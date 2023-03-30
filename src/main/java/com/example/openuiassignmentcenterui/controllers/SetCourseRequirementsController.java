@@ -69,6 +69,7 @@ public class SetCourseRequirementsController {
                     numberOfTasksPicker.setVisible(true);
                     numberOfTasksLabel.setVisible(true);
                     numberOfTasksWarning.setVisible(true);
+                    listOfCourses.setDisable(true);
                 }
             }
         }
@@ -101,13 +102,25 @@ public class SetCourseRequirementsController {
     }
 
     @FXML
-    void backButtonPressed(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
-        Parent root = loader.load();
-        ProfessorDashboardController pdc = loader.getController();
-        pdc.setUser(user);
-        SceneController.switchToScene(event, root);
+    void backButtonPressed(ActionEvent event) {
+        if (listOfCourses.isDisabled()) {
+            numberOfTasksPicker.setVisible(false);
+            numberOfTasksLabel.setVisible(false);
+            numberOfTasksWarning.setVisible(false);
+            listOfCourses.setDisable(false);
+        } else {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
+                Parent root = loader.load();
+                ProfessorDashboardController pdc = loader.getController();
+                pdc.setUser(user);
+                SceneController.switchToScene(event, root);
+            } catch (IOException e) {
+                Error.ioError();
+            }
+        }
     }
+
 
     public void setProfessor(Professor user) throws IOException {
         this.user = user;

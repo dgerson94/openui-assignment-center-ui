@@ -1,5 +1,6 @@
 package com.example.openuiassignmentcenterui.controllers;
 
+import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.models.Professor;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,28 +14,40 @@ public class ProfessorDashboardController {
     private Professor user;
 
     @FXML
-    void checkTasksButtonPressed(ActionEvent event) throws IOException {
+    void checkTasksButtonPressed(ActionEvent event)  {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("check_tasks.fxml"));
-        Parent root = loader.load();
-        CheckTasksController cac = loader.getController();
-        cac.setProfessor(user);
-        SceneController.switchToScene(event, root);
+        Parent root;
+        try {
+            root = loader.load();
+            CheckTasksController cac = loader.getController();
+            cac.setProfessor(user);
+            SceneController.switchToScene(event, root);
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     @FXML
-    void setCourseRequirementsButtonPressed(ActionEvent event) throws IOException {
-        System.out.println(user.getId() + "    "  + user.getPassword());
+    void setCourseRequirementsButtonPressed(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("set_course_requirements.fxml"));
-        Parent root = loader.load();
-        SetCourseRequirementsController scrc = loader.getController();
-        scrc.setProfessor(user);
-        SceneController.switchToScene(event, root);
+        Parent root;
+        try {
+            root = loader.load();
+            SetCourseRequirementsController scrc = loader.getController();
+            scrc.setProfessor(user);
+            SceneController.switchToScene(event, root);
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     @FXML
-    void logoutButtonPressed(ActionEvent event) throws IOException {
-//        TODO: Need to add sign out logic for user with database. For now will just make it a back button.
-        SceneController.switchToScene(event,"main_screen.fxml");
+    void logoutButtonPressed(ActionEvent event){
+        try {
+            SceneController.switchToScene(event,"main_screen.fxml");
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     public Professor getUser() {
