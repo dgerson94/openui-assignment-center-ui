@@ -26,7 +26,7 @@
       </HBox>
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#viewSubmissionButtonPressed" stylesheets="@Style.css" text="View Submission File" />
+            <Button mnemonicParsing="false" onAction="#downloadSubmissionButtonPressed" stylesheets="@Style.css" text="Download Submission File" />
             <Button fx:id="sendFeedbackFileButton" disable="true" mnemonicParsing="false" onAction="#sendFeedbackFileButtonPressed" stylesheets="@Style.css" text="Send Feedback File" />
          </children>
          <padding>

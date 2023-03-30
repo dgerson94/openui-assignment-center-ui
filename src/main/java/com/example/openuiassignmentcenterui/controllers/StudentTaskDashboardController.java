@@ -1,6 +1,7 @@
 package com.example.openuiassignmentcenterui.controllers;
 
 import com.example.openuiassignmentcenterui.helpers.Controller;
+import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Submission;
@@ -12,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -42,28 +44,18 @@ public class StudentTaskDashboardController {
     }
 
     @FXML
-    void viewFeedbackFilePressed(ActionEvent event) throws IOException {
-        File tmp;
-        String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/mysubmission/feedbackFile";
-        tmp = Https.httpGetFile(user.getId(),user.getPassword(),Controller.STUDENT,target);
-        TextArea fileText = new TextArea();
-        fileText.setWrapText(true);
-        fileText.setStyle("-fx-font-size: 16px; -fx-text-alignment: center;");
-        fileText.setText(Controller.readText(tmp));
-        fileText.setDisable(true);
-        VBox root = new VBox(10,fileText);
-        root.setAlignment(Pos.CENTER);
-
-        // create a new scene with the VBox as its root
-        Scene scene = new Scene(root, 300, 100);
-
-        // create a new stage to display the scene
-        Stage popup = new Stage();
-        popup.setTitle(tmp.getName());
-        popup.setScene(scene);
-
-        // show the popup screen
-        popup.show();
+    void viewFeedbackFilePressed(ActionEvent event){
+        try {
+            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/mysubmission/feedbackFile";
+            Https.httpGetFile(user.getId(),user.getPassword(),Controller.STUDENT,target);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Download Successful");
+            alert.setHeaderText("The Professor's feedback downloaded successfully.");
+            alert.setContentText("You can find the downloaded file in the projects file.");
+            alert.showAndWait();
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     @FXML

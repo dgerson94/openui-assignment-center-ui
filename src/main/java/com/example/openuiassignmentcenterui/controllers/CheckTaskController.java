@@ -1,6 +1,7 @@
 package com.example.openuiassignmentcenterui.controllers;
 
 import com.example.openuiassignmentcenterui.helpers.Controller;
+import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Submission;
@@ -12,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -85,30 +87,19 @@ public class CheckTaskController {
     }
 
     @FXML
-    void viewSubmissionButtonPressed(ActionEvent event) throws IOException {
-        //TODO: Need to fix layout so text is in the middle. Code here didn't work.
-        File tmp;
-        String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/file";
-        tmp = Https.httpGetFile(user.getId(),user.getPassword(),Controller.PROFESSOR,target);
-        TextArea fileText = new TextArea();
-        fileText.setWrapText(true);
-        fileText.setStyle("-fx-font-size: 16px; -fx-text-alignment: center;");
-        fileText.setText(Controller.readText(tmp));
-        fileText.setDisable(true);
-        VBox root = new VBox(10,fileText);
-        root.setAlignment(Pos.CENTER);
+    void downloadSubmissionButtonPressed(ActionEvent event) {
+        try {
+            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/file";
+            Https.httpGetFile(user.getId(),user.getPassword(),Controller.PROFESSOR,target);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Download Successful");
+            alert.setHeaderText("The Student's answer downloaded successfully.");
+            alert.setContentText("You can find the downloaded file in the projects file.");
+            alert.showAndWait();
+        } catch (Exception e) {
+            Error.ioError();
+        }
 
-
-        // create a new scene with the VBox as its root
-        Scene scene = new Scene(root, 300, 100);
-
-        // create a new stage to display the scene
-        Stage popup = new Stage();
-        popup.setTitle(tmp.getName());
-        popup.setScene(scene);
-
-        // show the popup screen
-        popup.show();
     }
 
     public void setController(Professor user, String studentId, String taskId, String courseId) throws IOException {
