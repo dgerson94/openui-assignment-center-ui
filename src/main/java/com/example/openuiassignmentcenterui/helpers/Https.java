@@ -40,11 +40,15 @@ public class Https {
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
                 e.raiseError();
-                return null;
+                return new StringBuffer("Error");
+            } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                Error e = new Error("Not Found", "We couldn't find what you asked for, please verify your info.");
+                e.raiseError();
+                return new StringBuffer("Error");
             } else {
                 Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
                 e.raiseError();
-                return null;
+                return new StringBuffer("Error");
             }
         } catch (IOException e) {
             Error.ioError();

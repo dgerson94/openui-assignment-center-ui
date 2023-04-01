@@ -11,6 +11,7 @@ import java.io.IOException;
 
 public class ProfessorDashboardController {
 
+    private static final int CREATED = 1;
     private Professor user;
 
     @FXML
@@ -19,9 +20,11 @@ public class ProfessorDashboardController {
         Parent root;
         try {
             root = loader.load();
-            CheckTasksController cac = loader.getController();
-            cac.setProfessor(user);
-            SceneController.switchToScene(event, root);
+            CheckTasksController ctc = loader.getController();
+            int success = ctc.setProfessor(user);
+            if (success == CREATED) {
+                SceneController.switchToScene(event, root);
+            }
         } catch (IOException e) {
             Error.ioError();
         }
@@ -34,8 +37,10 @@ public class ProfessorDashboardController {
         try {
             root = loader.load();
             SetCourseRequirementsController scrc = loader.getController();
-            scrc.setProfessor(user);
-            SceneController.switchToScene(event, root);
+            int success = scrc.setProfessor(user);
+            if (success == CREATED) {
+                SceneController.switchToScene(event, root);
+            }
         } catch (IOException e) {
             Error.ioError();
         }

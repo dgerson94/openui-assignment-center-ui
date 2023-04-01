@@ -31,6 +31,8 @@ public class CheckTasksController {
 
     private ArrayList<Task> tasks;
 
+    private static final int CREATED = 1;
+    private static final int FAILED_TO_CREATE = -1;
 
     private String pickedCourse;
     private String pickedTask;
@@ -128,9 +130,15 @@ public class CheckTasksController {
         }
     }
 
-    public void setProfessor(Professor professor) throws IOException {
+    public int setProfessor(Professor professor) throws IOException {
         this.user = professor;
         professorCourses = Controller.initializeController(user,courseListView);
+        if (professorCourses != null){
+            return CREATED;
+        } else {
+            return FAILED_TO_CREATE;
+        }
+
     }
 
     public Professor getUser() {

@@ -27,14 +27,18 @@ public class Controller {
         String user_name = user.getId();
         String password = user.getPassword();
         StringBuffer response = Https.httpGet(user_name, password, Controller.PROFESSOR, URL_COURSES);
-        TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
-        };
-        ArrayList<Course> professorCourses = new Gson().fromJson(String.valueOf(response), courseType);
-        ArrayList<String> nameOfCourses = getNameOfCourses(professorCourses);
+        if (!response.toString().equals("Error")) {
+            TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
+            };
+            ArrayList<Course> professorCourses = new Gson().fromJson(String.valueOf(response), courseType);
+            ArrayList<String> nameOfCourses = getNameOfCourses(professorCourses);
+            ObservableList<String> courses = FXCollections.observableArrayList(nameOfCourses);
+            listOfCourses.setItems(courses);
+            return professorCourses;
+        } else {
+            return null;
+        }
 
-        ObservableList<String> courses = FXCollections.observableArrayList(nameOfCourses);
-        listOfCourses.setItems(courses);
-        return professorCourses;
     }
 
     public static ArrayList<String> getNameOfCourses(ArrayList<Course> professorCourses) {

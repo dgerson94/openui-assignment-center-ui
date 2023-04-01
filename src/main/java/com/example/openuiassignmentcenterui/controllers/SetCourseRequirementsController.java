@@ -26,6 +26,8 @@ public class SetCourseRequirementsController {
     private static final String DEFAULT_DATE = "2023-01-01T00:00:00.000+00:00";
 
     private static final double DEFAULT_PERCENTAGE = 0.1;
+    private static final int CREATED = 1;
+    private static final int FAILED_TO_CREATE = -1;
     private Professor user;
     private ArrayList<Course> professorCourses;
     @FXML
@@ -122,10 +124,16 @@ public class SetCourseRequirementsController {
     }
 
 
-    public void setProfessor(Professor user) throws IOException {
+    public int setProfessor(Professor user) throws IOException {
         this.user = user;
         professorCourses = Controller.initializeController(user,listOfCourses);
-        ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
-        numberOfTasksPicker.setItems(numberOfCourses);
+        if (professorCourses != null) {
+            ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
+            numberOfTasksPicker.setItems(numberOfCourses);
+            return CREATED;
+        }
+        else{
+            return FAILED_TO_CREATE;
+        }
     }
 }

@@ -31,6 +31,6 @@ public class Error {
     public static void ioError(){
         Error err = new Error(Error.IO_TITLE,Error.IO_MESSAGE);
         err.raiseError();
-        System.exit(0);
+        System.exit(1);
     }
 }
