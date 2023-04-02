@@ -43,45 +43,55 @@ public class SetCourseRequirementsController {
 
 
     @FXML
-    void continueButtonPressed(ActionEvent event) throws IOException {
+    void continueButtonPressed(ActionEvent event) {
         String pickedCourse = listOfCourses.getSelectionModel().getSelectedItem();
         if (pickedCourse == null) {
             Error e = new Error("No course selected", "You did not select a course, please select a course.");
             e.raiseError();
         } else {
             String courseId = Controller.getCourseId(pickedCourse,professorCourses);
-            StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
-            if (!response.toString().equals("[]")) {
-                TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
-                };
-                ArrayList<Task> tasks = new Gson().fromJson(String.valueOf(response), courseType);
-                goToSetTasks(tasks, courseId, event);
-            } else {
-                if (numberOfTasksPicker.isVisible()) {
-                    if (numberOfTasksPicker.getValue() == null) {
-                        Error e = new Error("No number selected.", "You did not select how many tasks will be in the course. Please select how many there will be.");
-                        e.raiseError();
+            try {
+                StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
+                if (!response.toString().startsWith("Error")) {
+                    //this is a case with a normal response.
+                    TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
+                    };
+                    ArrayList<Task> tasks = new Gson().fromJson(String.valueOf(response), courseType);
+                    goToSetTasks(tasks, courseId, event);
+                } else if (response.toString().equals("Error 404")) {
+                    //we didn't receive an answer from the server so that means that there is no info, and we need to create tasks.
+                    if (numberOfTasksPicker.isVisible()) {
+                        if (numberOfTasksPicker.getValue() == null) {
+                            Error e = new Error("No number selected.", "You did not select how many tasks will be in the course. Please select how many there will be.");
+                            e.raiseError();
+                        } else {
+                            Integer numberOfTasks = numberOfTasksPicker.getValue();
+                            ArrayList<Task> tasks = makeEmptyTasks(numberOfTasks);
+                            postTasks(tasks,courseId);
+                            goToSetTasks(tasks, courseId, event);
+                        }
                     } else {
-                        Integer numberOfTasks = numberOfTasksPicker.getValue();
-                        ArrayList<Task> tasks = makeEmptyTasks(numberOfTasks);
-                        postTasks(tasks,courseId);
-                        goToSetTasks(tasks, courseId, event);
+                        numberOfTasksPicker.setVisible(true);
+                        numberOfTasksLabel.setVisible(true);
+                        numberOfTasksWarning.setVisible(true);
+                        listOfCourses.setDisable(true);
                     }
-                } else {
-                    numberOfTasksPicker.setVisible(true);
-                    numberOfTasksLabel.setVisible(true);
-                    numberOfTasksWarning.setVisible(true);
-                    listOfCourses.setDisable(true);
-                }
+                } //any other error already has a popup that there was a failure and no need to do anything else.
+            } catch (IOException e){
+                Error.ioError();
             }
         }
     }
 
-    private void postTasks(ArrayList<Task> tasks, String courseId) throws IOException {
+    private void postTasks(ArrayList<Task> tasks, String courseId) {
         for (int i = 0; i < tasks.size(); i++){
             Gson gson = new Gson();
             String jsonResponse = gson.toJson(tasks.get(i));
-            Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
+            try {
+                Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
+            } catch (IOException e) {
+                Error.ioError();
+            }
         }
     }
 

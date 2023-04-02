@@ -1,5 +1,6 @@
 package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
+import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Task;
@@ -49,7 +50,7 @@ public class SetTasksPropertiesController {
 
     @FXML
     private Button uploadFileButton;
-    
+
     private static final String URL_COURSES = "http://localhost:8080/courses/";
 
     private static String URL_TASK;
@@ -162,15 +163,15 @@ public class SetTasksPropertiesController {
                         URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
                             //TODO: Deal with a null file if that is an option. What I have now isn't good
-                           File file = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR,URL_TASK + "/file");
-                           taskFileTextField.setText(file.getName());
-                           file.delete();
+                            File file = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_TASK + "/file");
+                            if (file != null){
+                                taskFileTextField.setText(file.getName());
+                                file.delete();
+                            }
+                            setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
                         } catch (IOException e) {
-                            System.out.println("Found no file on database.");
-                            taskFileTextField.clear();
-                            taskFileTextField.setPromptText("Please Upload Text");
+                            Error.ioError();
                         }
-                        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
                     }
                 });
     }

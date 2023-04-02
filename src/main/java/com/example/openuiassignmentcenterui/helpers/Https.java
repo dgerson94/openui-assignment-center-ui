@@ -44,11 +44,11 @@ public class Https {
             } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
                 Error e = new Error("Not Found", "We couldn't find what you asked for, please verify your info.");
                 e.raiseError();
-                return new StringBuffer("Error");
+                return new StringBuffer("Error 404");
             } else {
                 Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
                 e.raiseError();
-                return new StringBuffer("Error");
+                return new StringBuffer("Error" + responseCode);
             }
         } catch (IOException e) {
             Error.ioError();
@@ -56,50 +56,46 @@ public class Https {
         return response;
     }
 
-    public static StringBuffer sendJson(String user_name, String password, String action, String database, String target, String jsonResponse)  {
-        try {
-            StringBuffer response = new StringBuffer();
-            URL obj = new URL(target);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            con.setRequestMethod(action);
-            String auth = createAuth(database, user_name, password);
-            byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
-            String authHeader = "Basic " + new String(encodedAuth);
-            con.setRequestProperty("Authorization", authHeader);
-            con.setDoOutput(true);
-            con.setRequestProperty("Content-Type", "application/json");
+    public static StringBuffer sendJson(String user_name, String password, String action, String database, String target, String jsonResponse) throws IOException {
+        StringBuffer response = new StringBuffer();
+        URL obj = new URL(target);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod(action);
+        String auth = createAuth(database, user_name, password);
+        byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
+        String authHeader = "Basic " + new String(encodedAuth);
+        con.setRequestProperty("Authorization", authHeader);
+        con.setDoOutput(true);
+        con.setRequestProperty("Content-Type", "application/json");
 
-            // For POST only - START
-            OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());
-            String jsonString = jsonResponse;
-            os.write(jsonString);
-            os.flush();
-            os.close();
-            // For POST only - END
+        // For POST only - START
+        OutputStreamWriter os = new OutputStreamWriter(con.getOutputStream());
+        String jsonString = jsonResponse;
+        os.write(jsonString);
+        os.flush();
+        os.close();
+        // For POST only - END
 
-            int responseCode = con.getResponseCode();
-            System.out.println(action + " Response Code :: " + responseCode);
+        int responseCode = con.getResponseCode();
+        System.out.println(action + " Response Code :: " + responseCode);
 
-            if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) { //success
-                BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-            } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
-                e.raiseError();
-                return null;
-            } else {
-                Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
-                e.raiseError();
-                return null;
+        if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) { //success
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
-        } catch (IOException e) {
-            Error.ioError();
+            in.close();
+            return null;
+        } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
+            Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
+            e.raiseError();
+            return null;
+        } else {
+            Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
+            e.raiseError();
+            return null;
         }
-        return null;
     }
 
 
@@ -127,8 +123,11 @@ public class Https {
         conn.setRequestProperty("Authorization", authHeaderValue);
 
         int responseCode = conn.getResponseCode();
+        //need to edit this. Deal with different errors
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            Error.ioError();
+            Error e = new Error("Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
+            e.raiseError();
+            return null;
         }
 
         String contentDisposition = conn.getHeaderField("Content-Disposition");
