@@ -1,6 +1,7 @@
 package com.example.openuiassignmentcenterui.helpers;
 
 import com.github.kevinsawicki.http.HttpRequest;
+import javafx.scene.control.Alert;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -104,10 +105,18 @@ public class Https {
         String[] authInfo = auth.split(":");
         HttpRequest request = HttpRequest.put(target).basic(authInfo[0], authInfo[1]);
         request.part("file", file.getName(), file);
-        if (request.ok() || request.created()) System.out.println(file.getName() + " was uploaded.");
-            //TODO:add a popup declaring a successful upload
-        else System.out.println("We were not able to upload " + file.getName());
-        //TODO:add a popup declaring upload didn't succeed.
+        if (request.ok() || request.created()){
+            //TODO: Make new helper class that does alerts.
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Upload Successful");
+            alert.setHeaderText("Your file was uploaded successfully.");
+            alert.setContentText("Thank you for using our System");
+            alert.showAndWait();
+        }
+        else{
+            Error e = new Error("Upload Failed","You upload failed with the following response code: " + request.code());
+            e.raiseError();
+        }
     }
 
 

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 public class CheckTaskController {
 
+    private static final int CREATED = 1;
     private Professor user;
     private String studentId;
     private String taskId;
@@ -42,12 +43,18 @@ public class CheckTaskController {
     private boolean gradeChange;
 
     @FXML
-    void backButtonPressed(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("check_tasks.fxml"));
-        Parent root = loader.load();
-        CheckTasksController cac = loader.getController();
-        cac.setProfessor(user);
-        SceneController.switchToScene(event, root);
+    void backButtonPressed(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("check_tasks.fxml"));
+            Parent root = loader.load();
+            CheckTasksController ctc = loader.getController();
+            int success = ctc.setProfessor(user);
+            if (success == CREATED) {
+                SceneController.switchToScene(event, root);
+            }
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     @FXML
@@ -60,9 +67,13 @@ public class CheckTaskController {
     }
 
     @FXML
-    void saveButtonPressed(ActionEvent event) throws IOException {
-        updateGrade();
-        disable();
+    void saveButtonPressed(ActionEvent event) {
+        try {
+            updateGrade();
+            disable();
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     private void updateGrade() throws IOException {
@@ -113,7 +124,7 @@ public class CheckTaskController {
 
     private void setGrade(String target) throws IOException {
         StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Controller.PROFESSOR, target);
-        if (!response.toString().equals("[]")) {
+        if (!response.toString().equals("Error")) {
             TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
             };
             ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(response), submissionType);
