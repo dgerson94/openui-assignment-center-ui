@@ -61,7 +61,7 @@ public class SetTasksPropertiesController {
 
 
     @FXML
-    void uploadFileButtonPressed(ActionEvent event) throws IOException {
+    void uploadFileButtonPressed(ActionEvent event) {
         Stage stage = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Task File");
@@ -72,12 +72,16 @@ public class SetTasksPropertiesController {
     }
 
     @FXML
-    void backButtonPressed(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("set_course_requirements.fxml"));
-        Parent root = loader.load();
-        SetCourseRequirementsController scrc = loader.getController();
-        scrc.setProfessor(user);
-        SceneController.switchToScene(event, root);
+    void backButtonPressed(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("set_course_requirements.fxml"));
+            Parent root = loader.load();
+            SetCourseRequirementsController scrc = loader.getController();
+            scrc.setProfessor(user);
+            SceneController.switchToScene(event, root);
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
     @FXML
@@ -86,7 +90,7 @@ public class SetTasksPropertiesController {
     }
 
     @FXML
-    void saveButtonPressed(ActionEvent event) throws IOException {
+    void saveButtonPressed(ActionEvent event) {
         String newCheckDeadLine = String.valueOf(gradeDueDatePicker.getValue());
         String newSubmissionDeadline = String.valueOf(taskDueDatePicker.getValue());
         Double newWeightInGrade = percentageOfCourseGradeSlider.getValue() / 100;
@@ -103,7 +107,11 @@ public class SetTasksPropertiesController {
             updatedJson = true;
         }
         if(updatedJson){
-            sendJson();
+            try {
+                sendJson();
+            } catch (IOException e) {
+                Error.ioError();
+            }
             updatedJson = false;
         }
         if (updatedFile){
@@ -113,19 +121,19 @@ public class SetTasksPropertiesController {
         setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
     }
 
-    private void sendFile() throws IOException {
+    private void sendFile() {
         File file = new File(fileAbsolutePath);
-        Https.httpPutFile(user.getId(), user.getPassword(), Controller.PROFESSOR,URL_TASK +"/file", file);
+        Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_TASK + "/file", file, currentTask.getHasFile());
     }
 
     private void sendJson() throws IOException {
         Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade());
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
-        StringBuffer response = Https.sendJson(user.getId(), user.getPassword(),"PUT", Controller.PROFESSOR,URL_TASK, jsonResponse);
+        Https.sendJson(user.getId(), user.getPassword(),"PUT", Controller.PROFESSOR,URL_TASK, jsonResponse);
     }
 
-    public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId) throws IOException {
+    public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId){
         this.user = user;
         this.tasks = tasks;
         this.courseId = courseId;
@@ -137,8 +145,7 @@ public class SetTasksPropertiesController {
 
     private LocalDate makeLocalDate(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"); // the format of the input string
-        LocalDate localDate = LocalDate.parse(date, formatter);
-        return localDate;
+        return LocalDate.parse(date, formatter);
     }
 
     private Task getCurrentTask(String currentTaskString) {
@@ -162,11 +169,13 @@ public class SetTasksPropertiesController {
                         taskDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
                         URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
                         try {
-                            //TODO: Deal with a null file if that is an option. What I have now isn't good
                             File file = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_TASK + "/file");
                             if (file != null){
                                 taskFileTextField.setText(file.getName());
                                 file.delete();
+                            }
+                            else {
+                                taskFileTextField.setPromptText("Please Upload Task");
                             }
                             setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
                         } catch (IOException e) {

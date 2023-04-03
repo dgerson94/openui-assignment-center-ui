@@ -27,7 +27,11 @@ public class Controller {
         String user_name = user.getId();
         String password = user.getPassword();
         StringBuffer response = Https.httpGet(user_name, password, Controller.PROFESSOR, URL_COURSES);
-        if (!response.toString().equals("Error")) {
+        if (response.toString().equals("[]")){
+          Error e = new Error("No courses found", "We didn't find any courses that the professor is supposed to teach. Please contact the admin if there is a problem.");
+          e.raiseError();
+          return null;
+        } else if (!response.toString().equals("Error")) {
             TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
             };
             ArrayList<Course> professorCourses = new Gson().fromJson(String.valueOf(response), courseType);

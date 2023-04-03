@@ -7,6 +7,7 @@ public class Task {
     private String submissionDeadline;
     private String checkDeadLine;
     private Double weightInGrade;
+    private Boolean hasFile;
 
     private transient File file;
 
@@ -20,6 +21,7 @@ public class Task {
         this.submissionDeadline = submissionDeadline;
         this.checkDeadLine = checkDeadLine;
         this.weightInGrade = weightInGrade;
+        this.hasFile = false;
     }
 
     public Integer getId() {
@@ -62,11 +64,11 @@ public class Task {
         return courseId;
     }
 
-//    public File getFile() {
-//        return file;
-//    }
-//
-//    public void setFile(File file) {
-//        this.file = file;
-//    }
+    public Boolean getHasFile() {
+        return hasFile;
+    }
+
+    public void setHasFile(Boolean hasFile) {
+        this.hasFile = hasFile;
+    }
 }

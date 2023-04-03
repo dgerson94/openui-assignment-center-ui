@@ -39,7 +39,18 @@ public class StudentTaskDashboardController {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/mysubmission/file";
-            Https.httpPutFile(user.getId(), user.getPassword(), Controller.STUDENT, target, file);
+            try {
+                boolean hasFile;
+                File response = Https.httpGetFile(user.getId(), user.getPassword(),Controller.STUDENT,target);
+                if (response == null){
+                    hasFile = false;
+                } else {
+                    hasFile = true;
+                }
+                Https.httpUploadFile(user.getId(), user.getPassword(), Controller.STUDENT, target, file,hasFile);
+            } catch (IOException e) {
+                Error.ioError();
+            }
         }
     }
 

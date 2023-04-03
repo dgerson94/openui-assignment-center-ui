@@ -47,9 +47,9 @@
                   <Label alignment="CENTER" text="Task Due Date" GridPane.rowIndex="1" />
                   <Label alignment="CENTER" text="Grade Due Date" GridPane.rowIndex="2" />
                   <Label text="Percentage Of Course Grade" GridPane.rowIndex="3" />
-                  <DatePicker fx:id="taskDueDatePicker" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <DatePicker fx:id="gradeDueDatePicker" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Slider fx:id="percentageOfCourseGradeSlider" blockIncrement="5.0" majorTickUnit="5.0" max="30.0" min="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="15.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <DatePicker fx:id="taskDueDatePicker" disable="true" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <DatePicker fx:id="gradeDueDatePicker" disable="true" promptText="Please Select Date" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Slider fx:id="percentageOfCourseGradeSlider" blockIncrement="5.0" disable="true" majorTickUnit="5.0" max="30.0" min="5.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="15.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <padding>
                         <Insets left="8.0" right="8.0" />
                      </padding>
@@ -57,7 +57,7 @@
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="16.0" GridPane.columnIndex="1">
                      <children>
                         <TextField fx:id="taskFileTextField" alignment="CENTER" disable="true" promptText="Please Upload Task" />
-                        <Button fx:id="uploadFileButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#uploadFileButtonPressed" stylesheets="@Style.css" text="Upload File" textAlignment="CENTER" />
+                        <Button fx:id="uploadFileButton" alignment="CENTER" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#uploadFileButtonPressed" stylesheets="@Style.css" text="Upload File" textAlignment="CENTER" />
                      </children>
                   </VBox>
                </children>

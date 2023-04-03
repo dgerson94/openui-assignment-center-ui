@@ -52,14 +52,8 @@ public class SetCourseRequirementsController {
             String courseId = Controller.getCourseId(pickedCourse,professorCourses);
             try {
                 StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
-                if (!response.toString().startsWith("Error")) {
-                    //this is a case with a normal response.
-                    TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
-                    };
-                    ArrayList<Task> tasks = new Gson().fromJson(String.valueOf(response), courseType);
-                    goToSetTasks(tasks, courseId, event);
-                } else if (response.toString().equals("Error 404")) {
-                    //we didn't receive an answer from the server so that means that there is no info, and we need to create tasks.
+                if (response.toString().equals("[]")) {
+                    //we received an empty array from the server so that means that there is no info, and we need to create tasks.
                     if (numberOfTasksPicker.isVisible()) {
                         if (numberOfTasksPicker.getValue() == null) {
                             Error e = new Error("No number selected.", "You did not select how many tasks will be in the course. Please select how many there will be.");
@@ -76,22 +70,24 @@ public class SetCourseRequirementsController {
                         numberOfTasksWarning.setVisible(true);
                         listOfCourses.setDisable(true);
                     }
-                } //any other error already has a popup that there was a failure and no need to do anything else.
+                } else if (!response.toString().startsWith("Error")) {
+                    //this is a case with a normal response.
+                    TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
+                    };
+                    ArrayList<Task> tasks = new Gson().fromJson(String.valueOf(response), courseType);
+                    goToSetTasks(tasks, courseId, event);
+                }
             } catch (IOException e){
                 Error.ioError();
             }
         }
     }
 
-    private void postTasks(ArrayList<Task> tasks, String courseId) {
+    private void postTasks(ArrayList<Task> tasks, String courseId) throws IOException {
         for (int i = 0; i < tasks.size(); i++){
             Gson gson = new Gson();
             String jsonResponse = gson.toJson(tasks.get(i));
-            try {
-                Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
-            } catch (IOException e) {
-                Error.ioError();
-            }
+            Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, URL_COURSES +"/" + courseId + "/tasks", jsonResponse);
         }
     }
 

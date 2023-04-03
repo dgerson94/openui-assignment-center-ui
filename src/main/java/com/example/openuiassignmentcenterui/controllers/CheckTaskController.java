@@ -5,6 +5,7 @@ import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Submission;
+import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.event.ActionEvent;
@@ -41,6 +42,8 @@ public class CheckTaskController {
     private Button sendFeedbackFileButton;
 
     private boolean gradeChange;
+
+    private boolean noGrade;
 
     @FXML
     void backButtonPressed(ActionEvent event) {
@@ -79,8 +82,12 @@ public class CheckTaskController {
     private void updateGrade() throws IOException {
         if (gradeChange){
             String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId +"/submissions/" + studentId +"/grade";
-            String grade = gradeTextField.getText();
-            Https.sendJson(user.getId(),user.getPassword(),"POST",Controller.PROFESSOR, target, grade);
+                String grade = gradeTextField.getText();
+            if (noGrade){
+                Https.sendJson(user.getId(), user.getPassword(), "POST", Controller.PROFESSOR, target, grade);
+            } else {
+                Https.sendJson(user.getId(), user.getPassword(), "PUT", Controller.PROFESSOR, target, grade);
+            }
         }
     }
 
@@ -92,7 +99,18 @@ public class CheckTaskController {
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
             String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/feedbackFile";
-            Https.httpPutFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target, file);
+            try {
+                boolean hasFile;
+                File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR,target);
+                if (response == null){
+                    hasFile = false;
+                } else {
+                    hasFile = true;
+                }
+                Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target, file,hasFile);
+            } catch (IOException e){
+                Error.ioError();
+            }
         }
         disable();
     }
@@ -113,7 +131,7 @@ public class CheckTaskController {
 
     }
 
-    public void setController(Professor user, String studentId, String taskId, String courseId) throws IOException {
+    public void setController(Professor user, String studentId, String taskId, String courseId) {
         this.user = user;
         this.studentId = studentId;
         this.taskId = taskId;
@@ -122,7 +140,7 @@ public class CheckTaskController {
         setGrade(target);
     }
 
-    private void setGrade(String target) throws IOException {
+    private void setGrade(String target) {
         StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Controller.PROFESSOR, target);
         if (!response.toString().equals("Error")) {
             TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
@@ -131,10 +149,11 @@ public class CheckTaskController {
             //for now assume there is only one answer, maybe in future make a decision of sorts. Need to fix always true.
             String grade = submissions.get(0).getGrade().toString();
             if (grade != null) {
+                noGrade = false;
                 gradeTextField.setText(grade);
+            } else {
+                noGrade = true;
             }
-        } else {
-            //Think of error, there should always be a response here. Server Error.
         }
     }
 

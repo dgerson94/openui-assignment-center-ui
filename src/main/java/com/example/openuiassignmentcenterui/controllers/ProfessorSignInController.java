@@ -45,7 +45,7 @@ public class ProfessorSignInController {
             }
         } catch (IOException e) {
             Error.ioError();
-        } //TODO: also need to catch and deal with HTTPS errors here.
+        }
     }
 
     @FXML

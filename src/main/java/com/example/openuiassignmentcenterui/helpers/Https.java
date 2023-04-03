@@ -57,7 +57,7 @@ public class Https {
         return response;
     }
 
-    public static StringBuffer sendJson(String user_name, String password, String action, String database, String target, String jsonResponse) throws IOException {
+    public static void sendJson(String user_name, String password, String action, String database, String target, String jsonResponse) throws IOException {
         StringBuffer response = new StringBuffer();
         URL obj = new URL(target);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -80,32 +80,35 @@ public class Https {
         int responseCode = con.getResponseCode();
         System.out.println(action + " Response Code :: " + responseCode);
 
-        if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED) { //success
+        if (responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_CREATED || responseCode == HttpURLConnection.HTTP_NO_CONTENT) { //success
+            //TODO: might not be needed - check in review if removing affects the method. Just return null.
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
             in.close();
-            return null;
         } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
             Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
             e.raiseError();
-            return null;
         } else {
             Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
             e.raiseError();
-            return null;
         }
     }
 
 
-    public static void httpPutFile(String user_name, String password, String database, String target, File file) {
+    public static void httpUploadFile(String user_name, String password, String database, String target, File file, boolean hasFile) {
         String auth = createAuth(database, user_name, password);
         String[] authInfo = auth.split(":");
-        HttpRequest request = HttpRequest.put(target).basic(authInfo[0], authInfo[1]);
+        HttpRequest request;
+        if (hasFile) {
+            request = HttpRequest.put(target).basic(authInfo[0], authInfo[1]);
+        } else {
+            request = HttpRequest.post(target).basic(authInfo[0], authInfo[1]);
+        }
         request.part("file", file.getName(), file);
-        if (request.ok() || request.created()){
+        if (request.ok() || request.created() || request.noContent()){
             //TODO: Make new helper class that does alerts.
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Upload Successful");
@@ -120,7 +123,8 @@ public class Https {
     }
 
 
-    public static File httpGetFile(String user_name, String password, String database, String target) throws IOException {
+    public static File httpGetFile(String user_name, String password, String database, String target, boolean noFileFoundError) throws IOException {
+        //there is a default method that noFileFoundError is false. If we want to show the no file found error, than make noFileFoundError true.
         File temp = null;
         URL url = new URL(target);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -133,8 +137,30 @@ public class Https {
 
         int responseCode = conn.getResponseCode();
         //need to edit this. Deal with different errors
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            Error e = new Error("Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
+        if (responseCode == HttpURLConnection.HTTP_NOT_FOUND){
+            InputStream inputStream = conn.getErrorStream();
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(
+                            inputStream));
+
+            StringBuilder response = new StringBuilder();
+            String currentLine;
+            while ((currentLine = in.readLine()) != null)
+                response.append(currentLine);
+            in.close();
+            if (response.toString().contains("server-thrown-error")){
+                if (noFileFoundError) {
+                    Error e = new Error("No File Uploaded", "You have not uploaded a file and therefore we can't continue.");
+                    e.raiseError();
+                }
+                return null;
+            } else {
+                Error e = new Error("Site Not Found", "We couldn't find the page.");
+                e.raiseError();
+                return null;
+            }
+        } else if (responseCode != HttpURLConnection.HTTP_OK) {
+            Error e = new Error("Error", "This is an Http " + responseCode + " error. Your request didn't go through.");
             e.raiseError();
             return null;
         }
@@ -163,6 +189,10 @@ public class Https {
 
         conn.disconnect();
         return temp;
+    }
+
+    public static File httpGetFile(String user_name, String password, String database, String target) throws IOException {
+        return httpGetFile(user_name,password,database,target,false);
     }
 
     private static String createAuth(String database, String user_name, String password) {

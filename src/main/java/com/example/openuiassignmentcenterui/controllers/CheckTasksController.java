@@ -80,14 +80,14 @@ public class CheckTasksController {
                 } else {
                     taskId = Controller.getTaskId(pickedTask, tasks);
                     StringBuffer responseStudents = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions");
-                    if (!responseStudents.toString().equals("Error")) {
+                    if (responseStudents.toString().equals("[]")) {
+                        Error e = new Error("No students in this course.", "Call the rector and complain that no one signed up for your course.");
+                        e.raiseError();
+                    } else if (!responseStudents.toString().equals("Error")) {
                         TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
                         };
                         ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(responseStudents), submissionType);
-                        Controller.update_lists_forward(studentListView,taskListView, Controller.createObservableStudentList(submissions));
-                    } else if (responseStudents.toString().equals("Error 404")){
-                        Error e = new Error("No students in this course.", "Call the rector and complain that no one signed up for your course.");
-                        e.raiseError();
+                        Controller.update_lists_forward(studentListView, taskListView, Controller.createObservableStudentList(submissions));
                     }
                 }
             } else {
