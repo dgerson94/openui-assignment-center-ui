@@ -83,7 +83,7 @@ public class CheckTasksController {
                     if (responseStudents.toString().equals("[]")) {
                         Error e = new Error("No students in this course.", "Call the rector and complain that no one signed up for your course.");
                         e.raiseError();
-                    } else if (!responseStudents.toString().equals("Error")) {
+                    } else if (!responseStudents.toString().startsWith("Error")) {
                         TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
                         };
                         ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(responseStudents), submissionType);
@@ -99,14 +99,14 @@ public class CheckTasksController {
                 } else {
                     courseId = Controller.getCourseId(pickedCourse, professorCourses);
                     StringBuffer responseTasks = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
-                    if (!responseTasks.toString().equals("Error")) {
+                    if (responseTasks.toString().equals("[]")) {
+                        Error e = new Error("No tasks in this course.", "You have not set any tasks for this course yet. How can your students do work you didn't assign?");
+                        e.raiseError();
+                    } else if (!responseTasks.toString().startsWith("Error")) {
                         TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                         };
                         tasks = new Gson().fromJson(String.valueOf(responseTasks), courseType);
                         Controller.update_lists_forward(taskListView, courseListView, Controller.createObservableList(tasks.size()));
-                    } else if (responseTasks.toString().equals("Error 404")){
-                        Error e = new Error("No tasks in this course.", "You have not set any tasks for this course yet. How can your students do work you didn't assign?");
-                        e.raiseError();
                     }
                 }
             }

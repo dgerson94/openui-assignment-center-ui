@@ -55,36 +55,44 @@ public class StudentTaskDashboardController {
     }
 
     @FXML
-    void viewFeedbackFilePressed(ActionEvent event){
+    void downloadFeedbackFilePressed(ActionEvent event){
         try {
             String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/mysubmission/feedbackFile";
-            Https.httpGetFile(user.getId(),user.getPassword(),Controller.STUDENT,target);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Download Successful");
-            alert.setHeaderText("The Professor's feedback downloaded successfully.");
-            alert.setContentText("You can find the downloaded file in the projects file.");
-            alert.showAndWait();
+            File response = Https.httpGetFile(user.getId(),user.getPassword(),Controller.STUDENT,target,true);
+            if (response != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Download Successful");
+                alert.setHeaderText("The Professor's feedback downloaded successfully.");
+                alert.setContentText("You can find the downloaded file in the projects file.");
+                alert.showAndWait();
+            }
         } catch (IOException e) {
             Error.ioError();
         }
     }
 
     @FXML
-    void backButtonPressed(ActionEvent event) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
-        Parent root = loader.load();
-        StudentDashboardController sdc = loader.getController();
-        sdc.setUser(user);
-        SceneController.switchToScene(event, root);
+    void backButtonPressed(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
+            Parent root = loader.load();
+            StudentDashboardController sdc = loader.getController();
+            sdc.setUser(user);
+            SceneController.switchToScene(event, root);
+        } catch (IOException e) {
+            Error.ioError();
+        }
     }
 
-    public void setController(Professor user, String taskId, String courseId) throws IOException {
+    public void setController(Professor user, String taskId, String courseId) {
         this.user = user;
         this.taskId = taskId;
         this.courseId = courseId;
         String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId +"/mysubmission";
         StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT,target);
-        if (response != null) {
+        if (response.toString().equals("No Submission.")) {
+
+        } else if (!response.toString().startsWith("Error")) {
             Submission submission = new Gson().fromJson(String.valueOf(response),Submission.class);
             //for now assume there is only one answer, maybe in future make a decision of sorts. Need to fix always error.
             if (submission.getGrade() != null){

@@ -31,7 +31,7 @@ public class Controller {
           Error e = new Error("No courses found", "We didn't find any courses that the professor is supposed to teach. Please contact the admin if there is a problem.");
           e.raiseError();
           return null;
-        } else if (!response.toString().equals("Error")) {
+        } else if (!response.toString().startsWith("Error")) {
             TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
             };
             ArrayList<Course> professorCourses = new Gson().fromJson(String.valueOf(response), courseType);

@@ -58,7 +58,10 @@ public class StudentDashboardController {
             } else {
                 courseId = Controller.getCourseId(pickedCourse, studentCourses);
                 StringBuffer responseTasks = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT, Controller.URL_COURSES + "/" + courseId + "/tasks");
-                if (!responseTasks.toString().equals("[]")) {
+                if (responseTasks.toString().equals("[]")) {
+                    Error e = new Error("No tasks", "The Professor still hasn't uploaded any tasks, check again at a later date.");
+                    e.raiseError();
+                } else if (!responseTasks.toString().startsWith("Error")) {
                     TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                     };
                     tasks = new Gson().fromJson(String.valueOf(responseTasks), courseType);
@@ -81,12 +84,14 @@ public class StudentDashboardController {
     public void setUser(Professor user) throws IOException {
         this.user = user;
         StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT, URL_COURSES);
-        TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
-        };
-        studentCourses = new Gson().fromJson(String.valueOf(response), courseType);
-        ArrayList<String> nameOfCourses = Controller.getNameOfCourses(studentCourses);
+        if (!response.toString().startsWith("Error")) {
+            TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
+            };
+            studentCourses = new Gson().fromJson(String.valueOf(response), courseType);
+            ArrayList<String> nameOfCourses = Controller.getNameOfCourses(studentCourses);
 
-        ObservableList<String> courses = FXCollections.observableArrayList(nameOfCourses);
-        coursesViewList.setItems(courses);
+            ObservableList<String> courses = FXCollections.observableArrayList(nameOfCourses);
+            coursesViewList.setItems(courses);
+        }
     }
 }

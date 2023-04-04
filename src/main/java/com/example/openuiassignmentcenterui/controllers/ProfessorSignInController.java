@@ -34,7 +34,7 @@ public class ProfessorSignInController {
                 String user_name = full_name.getText();
                 String password = passwordField.getText();
                 StringBuffer response = Https.httpGet(user_name,password, Controller.PROFESSOR,"http://localhost:8080/courses");
-                if (!response.toString().equals("Error")) {
+                if (!response.toString().startsWith("Error")) {
                     Professor user = createUser(user_name, password);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
                     Parent root = loader.load();

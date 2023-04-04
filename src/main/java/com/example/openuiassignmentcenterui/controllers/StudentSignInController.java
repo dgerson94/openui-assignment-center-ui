@@ -29,7 +29,7 @@ public class StudentSignInController {
     private PasswordField passwordField;
 
     @FXML
-    void logonButtonPressed(ActionEvent event) throws IOException {
+    void logonButtonPressed(ActionEvent event) {
         if (full_name.getText().matches("")){
             Error e = new Error();
             e.raiseError();
@@ -42,15 +42,26 @@ public class StudentSignInController {
             String user_name = full_name.getText();
             String password = passwordField.getText();
             StringBuffer response = Https.httpGet(user_name, password, Controller.STUDENT, "http://localhost:8080/courses");
-            if (response != null) {
-                Professor user = Controller.createUser(user_name, password);
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
-                Parent root = loader.load();
-                StudentDashboardController sdc = loader.getController();
-                sdc.setUser(user);
-                SceneController.switchToScene(event, root);
-
+            if (!response.toString().startsWith("Error")) {
+                try {
+                    Professor user = Controller.createUser(user_name, password);
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
+                    Parent root = loader.load();
+                    StudentDashboardController sdc = loader.getController();
+                    sdc.setUser(user);
+                    SceneController.switchToScene(event, root);
+                } catch (IOException e) {
+                    Error.ioError();
+                }
             }
+        }
+    }
+
+    public void backButtonPressed(ActionEvent event) {
+        try {
+            SceneController.switchToScene(event,"main_screen.fxml");
+        } catch (IOException e) {
+            Error.ioError();
         }
     }
 }

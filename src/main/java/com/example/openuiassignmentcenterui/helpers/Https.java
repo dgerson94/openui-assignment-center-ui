@@ -38,14 +38,19 @@ public class Https {
                     response.append(inputLine);
                 }
                 in.close();
+            } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
+                StringBuilder errorResponse = getErrorStream(con);
+                if (errorResponse.toString().contains("server-thrown-error")){
+                    return new StringBuffer("No Submission.");
+                } else {
+                    Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
+                    e.raiseError();
+                    return new StringBuffer("Error" + responseCode);
+                }
             } else if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 Error e = new Error("Unauthorized", "The FullName or Password is incorrect, please try again");
                 e.raiseError();
                 return new StringBuffer("Error");
-            } else if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
-                Error e = new Error("Not Found", "We couldn't find what you asked for, please verify your info.");
-                e.raiseError();
-                return new StringBuffer("Error 404");
             } else {
                 Error e = new Error("Http Error", "This is an Http " + responseCode + "error. Your request didn't go through.");
                 e.raiseError();
@@ -124,7 +129,7 @@ public class Https {
 
 
     public static File httpGetFile(String user_name, String password, String database, String target, boolean noFileFoundError) throws IOException {
-        //there is a default method that noFileFoundError is false. If we want to show the no file found error, than make noFileFoundError true.
+        //there is a default method that noFileFoundError is false. If we want to show the no file found error, then make noFileFoundError true.
         File temp = null;
         URL url = new URL(target);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -138,27 +143,7 @@ public class Https {
         int responseCode = conn.getResponseCode();
         //need to edit this. Deal with different errors
         if (responseCode == HttpURLConnection.HTTP_NOT_FOUND){
-            InputStream inputStream = conn.getErrorStream();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            inputStream));
-
-            StringBuilder response = new StringBuilder();
-            String currentLine;
-            while ((currentLine = in.readLine()) != null)
-                response.append(currentLine);
-            in.close();
-            if (response.toString().contains("server-thrown-error")){
-                if (noFileFoundError) {
-                    Error e = new Error("No File Uploaded", "You have not uploaded a file and therefore we can't continue.");
-                    e.raiseError();
-                }
-                return null;
-            } else {
-                Error e = new Error("Site Not Found", "We couldn't find the page.");
-                e.raiseError();
-                return null;
-            }
+            return dealWithNotFound(noFileFoundError, conn);
         } else if (responseCode != HttpURLConnection.HTTP_OK) {
             Error e = new Error("Error", "This is an Http " + responseCode + " error. Your request didn't go through.");
             e.raiseError();
@@ -189,6 +174,36 @@ public class Https {
 
         conn.disconnect();
         return temp;
+    }
+
+    private static File dealWithNotFound(boolean noFileFoundError, HttpURLConnection conn) throws IOException {
+        //TODO: This should be dealt with on the controller level. Need to change if there is time.
+        StringBuilder response = getErrorStream(conn);
+        if (response.toString().contains("server-thrown-error")){
+            if (noFileFoundError) {
+                Error e = new Error("No File Uploaded", "The professor hasn't uploaded a file yet. Check again later.");
+                e.raiseError();
+            }
+            return null;
+        } else {
+            Error e = new Error("Site Not Found", "We couldn't find the page.");
+            e.raiseError();
+            return null;
+        }
+    }
+
+    private static StringBuilder getErrorStream(HttpURLConnection conn) throws IOException {
+        InputStream inputStream = conn.getErrorStream();
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(
+                        inputStream));
+
+        StringBuilder response = new StringBuilder();
+        String currentLine;
+        while ((currentLine = in.readLine()) != null)
+            response.append(currentLine);
+        in.close();
+        return response;
     }
 
     public static File httpGetFile(String user_name, String password, String database, String target) throws IOException {

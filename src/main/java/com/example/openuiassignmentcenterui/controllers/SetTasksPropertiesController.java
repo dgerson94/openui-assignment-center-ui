@@ -175,6 +175,7 @@ public class SetTasksPropertiesController {
                                 file.delete();
                             }
                             else {
+                                taskFileTextField.clear();
                                 taskFileTextField.setPromptText("Please Upload Task");
                             }
                             setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);

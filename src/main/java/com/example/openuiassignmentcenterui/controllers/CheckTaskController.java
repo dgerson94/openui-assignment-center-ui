@@ -65,6 +65,7 @@ public class CheckTaskController {
         gradeTextField.setDisable(false);
         sendFeedbackFileButton.setDisable(false);
         gradeTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            sendFeedbackFileButton.setDisable(true);
             gradeChange = true;
         });
     }
@@ -142,15 +143,15 @@ public class CheckTaskController {
 
     private void setGrade(String target) {
         StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Controller.PROFESSOR, target);
-        if (!response.toString().equals("Error")) {
+        if (!response.toString().startsWith("Error")) {
             TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
             };
             ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(response), submissionType);
             //for now assume there is only one answer, maybe in future make a decision of sorts. Need to fix always true.
-            String grade = submissions.get(0).getGrade().toString();
+            Integer grade = submissions.get(0).getGrade();
             if (grade != null) {
                 noGrade = false;
-                gradeTextField.setText(grade);
+                gradeTextField.setText(grade.toString());
             } else {
                 noGrade = true;
             }
