@@ -1,0 +1,8 @@
+
+w	java:S116*"VRename this field "URL_COURSES" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(×š„ûÿÿÿÿ8ïöŞÃô0
+C
+java:S1170*"!Make this final field static too.(×š„ûÿÿÿÿ8ïöŞÃô0
+|
+java:S11496"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(Û…ô¢8ğöŞÃô0
+t
+java:S3776."RRefactor this method to reduce its Cognitive Complexity from 16 to the 15 allowed.(ä¤ÓÚúÿÿÿÿ8ñöŞÃô0
