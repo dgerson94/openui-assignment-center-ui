@@ -5,44 +5,37 @@ import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Submission;
-import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class CheckTaskController {
 
     private static final int CREATED = 1;
+    private static final String TASKS = "/tasks/";
+    private static final String SUBMISSIONS = "/submissions/";
     private Professor user;
     private String studentId;
     private String taskId;
     private String courseId;
     @FXML
     private TextField gradeTextField;
-
     @FXML
     private Button sendFeedbackFileButton;
-
     private boolean gradeChange;
-
     private boolean noGrade;
 
     @FXML
@@ -81,10 +74,10 @@ public class CheckTaskController {
     }
 
     private void updateGrade() throws IOException {
-        if (gradeChange){
-            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId +"/submissions/" + studentId +"/grade";
-                String grade = gradeTextField.getText();
-            if (noGrade){
+        if (gradeChange) {
+            String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + SUBMISSIONS + studentId + "/grade";
+            String grade = gradeTextField.getText();
+            if (noGrade) {
                 Https.sendJson(user.getId(), user.getPassword(), "POST", Controller.PROFESSOR, target, grade);
             } else {
                 Https.sendJson(user.getId(), user.getPassword(), "PUT", Controller.PROFESSOR, target, grade);
@@ -99,17 +92,14 @@ public class CheckTaskController {
         fileChooser.setTitle("Open Task File");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/feedbackFile";
+            String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + SUBMISSIONS + studentId + "/feedbackFile";
             try {
                 boolean hasFile;
-                File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR,target);
-                if (response == null){
-                    hasFile = false;
-                } else {
-                    hasFile = true;
-                }
-                Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target, file,hasFile);
-            } catch (IOException e){
+                File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target);
+                hasFile = response != null;
+                Files.delete(response.toPath());
+                Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target, file, hasFile);
+            } catch (IOException e) {
                 Error.ioError();
             }
         }
@@ -119,8 +109,8 @@ public class CheckTaskController {
     @FXML
     void downloadSubmissionButtonPressed(ActionEvent event) {
         try {
-            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions/" + studentId + "/file";
-            Https.httpGetFile(user.getId(),user.getPassword(),Controller.PROFESSOR,target);
+            String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + SUBMISSIONS + studentId + "/file";
+            Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Download Successful");
             alert.setHeaderText("The Student's answer downloaded successfully.");
@@ -137,12 +127,12 @@ public class CheckTaskController {
         this.studentId = studentId;
         this.taskId = taskId;
         this.courseId = courseId;
-        String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId +"/submissions";
+        String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/submissions";
         setGrade(target);
     }
 
     private void setGrade(String target) {
-        StringBuffer response = Https.httpGet(user.getId(),user.getPassword(),Controller.PROFESSOR, target);
+        StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, target);
         if (!response.toString().startsWith("Error")) {
             TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
             };
@@ -158,7 +148,7 @@ public class CheckTaskController {
         }
     }
 
-    private void disable(){
+    private void disable() {
         gradeTextField.setDisable(true);
         sendFeedbackFileButton.setDisable(true);
     }

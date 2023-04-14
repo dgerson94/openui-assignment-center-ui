@@ -1,8 +1,0 @@
-
-r	java:S117""QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(“ Μεώÿÿÿÿ8©ίτσ0
-m	java:S117="QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ƒ…²8ªίτσ0
-}
-java:S1488>"aImmediately return this expression instead of assigning it to the temporary variable "professor".(ΰ‰ΒO8«ίτσ0
-u	java:S116"TRename this field "full_name" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ΕΏωύÿÿÿÿ8Ώίτσ0
-
-java:S1149$"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(£ζ‘όÿÿÿÿ8ΐίτσ0

@@ -1,9 +1,0 @@
-
-w
-java:S1450"URemove the "taskId" field and declare it as a local variable in the relevant methods.(’€ϊÿÿÿÿ8°ÿντ0
-
-java:S1149<"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(Η•¥εώÿÿÿÿ8±ÿντ0
-
-java:S1149V"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(Όαέωÿÿÿÿ8±ÿντ0
-‰
-java:S1130T"lRemove the declaration of thrown exception 'java.io.IOException', as it cannot be thrown from method's body.(μΉ8Όÿντ0

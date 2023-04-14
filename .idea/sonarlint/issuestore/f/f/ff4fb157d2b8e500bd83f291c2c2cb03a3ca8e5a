@@ -1,17 +1,0 @@
-
-c
-java:S1104"NMake id a static final constant or non-public and provide accessors if needed.(†·Ûq
-f
-java:S1104"PMake name a static final constant or non-public and provide accessors if needed.( şÍ¾
-l
-java:S1104	"WMake professorId a static final constant or non-public and provide accessors if needed.(ìö /
-j
-java:S1104
-"TMake tasksSet a static final constant or non-public and provide accessors if needed.(ËÅğû
-F
-java:S2065"0Remove the "transient" modifier from this field.(áÃ›¿
-H
-java:S1135"2Complete the task associated to this TODO comment.(™óÓÛ
-V	java:S1259"<This block of commented-out lines of code should be removed.(ı÷Ğıÿÿÿÿ
-?
-java:S1068")Remove this unused "tasks" private field.(áÃ›¿
