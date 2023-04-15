@@ -1,6 +1,7 @@
 package com.example.openuiassignmentcenterui.controllers;
 
 import com.example.openuiassignmentcenterui.helpers.Error;
+import com.example.openuiassignmentcenterui.helpers.SceneController;
 import com.example.openuiassignmentcenterui.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
