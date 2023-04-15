@@ -65,7 +65,7 @@ public class StudentDashboardController {
                     TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                     };
                     tasks = new Gson().fromJson(String.valueOf(responseTasks), courseType);
-                    Controller.update_lists_forward(tasksViewList, coursesViewList, Controller.createObservableList(tasks.size()));
+                    Controller.updateListsForward(tasksViewList, coursesViewList, Controller.createObservableList(tasks.size()));
                 }
             }
         }
@@ -74,7 +74,7 @@ public class StudentDashboardController {
     @FXML
     void backButtonPressed(ActionEvent event) throws IOException {
         if (!tasksViewList.isDisabled()){
-            Controller.update_lists_backwards(coursesViewList,tasksViewList);
+            Controller.updateListsBackwards(coursesViewList,tasksViewList);
         } else  {
             SceneController.switchToScene(event,"student_sign_in.fxml");
         }

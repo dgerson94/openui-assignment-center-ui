@@ -1,15 +1,11 @@
 package com.example.openuiassignmentcenterui.models;
 
-import java.util.Collection;
-
 public class Course {
-    public Integer id;
-    public String name;
+    private Integer id;
+    private String name;
 
-    public String professorId;
-    public boolean tasksSet;
-    //TODO: Need to learn what to do with null values so there won't be an error.
-    private transient Collection<Task> tasks;
+    private String professorId;
+    private boolean tasksSet;
 
     public Course() {
 
@@ -54,11 +50,4 @@ public class Course {
         this.tasksSet = tasksSet;
     }
 
-//    public Collection<Task> getTasks() {
-//        return tasks;
-//    }
-//
-//    public void setTasks(Collection<Task> tasks) {
-//        this.tasks = tasks;
-//    }
 }

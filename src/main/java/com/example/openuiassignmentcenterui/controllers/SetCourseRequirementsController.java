@@ -133,7 +133,7 @@ public class SetCourseRequirementsController {
     public int setProfessor(Professor user) throws IOException {
         this.user = user;
         professorCourses = Controller.initializeController(user,listOfCourses);
-        if (professorCourses != null) {
+        if (professorCourses.isEmpty()) {
             ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
             numberOfTasksPicker.setItems(numberOfCourses);
             return CREATED;

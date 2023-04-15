@@ -1,15 +1,13 @@
 package com.example.openuiassignmentcenterui.helpers;
 
-import com.example.openuiassignmentcenterui.controllers.ProfessorDashboardController;
-import com.example.openuiassignmentcenterui.controllers.SceneController;
-import com.example.openuiassignmentcenterui.models.*;
+import com.example.openuiassignmentcenterui.models.Course;
+import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.Submission;
+import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.ListView;
 
 import java.io.BufferedReader;
@@ -23,14 +21,18 @@ public class Controller {
     public static final String STUDENT = "student";
     public static final String PROFESSOR = "professor";
 
-    public static ArrayList<Course> initializeController(Professor user, ListView<String> listOfCourses) throws IOException {
-        String user_name = user.getId();
+    private Controller() {
+        throw new IllegalStateException("Controller class");
+    }
+
+    public static ArrayList<Course> initializeController(Professor user, ListView<String> listOfCourses) {
+        String userName = user.getId();
         String password = user.getPassword();
-        StringBuffer response = Https.httpGet(user_name, password, Controller.PROFESSOR, URL_COURSES);
-        if (response.toString().equals("[]")){
-          Error e = new Error("No courses found", "We didn't find any courses that the professor is supposed to teach. Please contact the admin if there is a problem.");
-          e.raiseError();
-          return null;
+        StringBuffer response = Https.httpGet(userName, password, Controller.PROFESSOR, URL_COURSES);
+        if (response.toString().equals("[]")) {
+            Error e = new Error("No courses found", "We didn't find any courses that the professor is supposed to teach. Please contact the admin if there is a problem.");
+            e.raiseError();
+            return new ArrayList<>();
         } else if (!response.toString().startsWith("Error")) {
             TypeToken<ArrayList<Course>> courseType = new TypeToken<>() {
             };
@@ -40,7 +42,7 @@ public class Controller {
             listOfCourses.setItems(courses);
             return professorCourses;
         } else {
-            return null;
+            return new ArrayList<>();
         }
 
     }
@@ -54,8 +56,7 @@ public class Controller {
     }
 
     public static String capitalize(String str) {
-        String capitalizedStr = str.substring(0, 1).toUpperCase() + str.substring(1);
-        return capitalizedStr;
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
     public static String getCourseId(String picked, ArrayList<Course> courses) {
@@ -97,19 +98,18 @@ public class Controller {
         return oList;
     }
 
-    public static Professor createUser (String user_name, String password){
-        Professor professor = new Professor(user_name,password);
-        return professor;
+    public static Professor createUser(String userName, String password) {
+        return new Professor(userName, password);
     }
 
-    public static void update_lists_forward(ListView<String> newList, ListView<String> oldList, ObservableList<String> newOList) {
+    public static void updateListsForward(ListView<String> newList, ListView<String> oldList, ObservableList<String> newOList) {
         newList.setItems(newOList);
         newList.refresh();
         newList.setDisable(false);
         oldList.setDisable(true);
     }
 
-    public static void update_lists_backwards(ListView<String> newList, ListView<String> oldList){
+    public static void updateListsBackwards(ListView<String> newList, ListView<String> oldList) {
         oldList.setItems(null);
         oldList.refresh();
         oldList.setDisable(true);

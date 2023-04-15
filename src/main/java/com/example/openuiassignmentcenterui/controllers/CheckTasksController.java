@@ -76,7 +76,7 @@ public class CheckTasksController {
                 TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
                 };
                 tasks = new Gson().fromJson(String.valueOf(responseTasks), courseType);
-                Controller.update_lists_forward(taskListView, courseListView, Controller.createObservableList(tasks.size()));
+                Controller.updateListsForward(taskListView, courseListView, Controller.createObservableList(tasks.size()));
             }
         }
     }
@@ -96,7 +96,7 @@ public class CheckTasksController {
                 TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
                 };
                 ArrayList<Submission> submissions = new Gson().fromJson(String.valueOf(responseStudents), submissionType);
-                Controller.update_lists_forward(studentListView, taskListView, Controller.createObservableStudentList(submissions));
+                Controller.updateListsForward(studentListView, taskListView, Controller.createObservableStudentList(submissions));
             }
         }
     }
@@ -124,10 +124,10 @@ public class CheckTasksController {
     @FXML
     void backButtonPressed(ActionEvent event) {
         if (!studentListView.isDisabled()) {
-            Controller.update_lists_backwards(taskListView, studentListView);
+            Controller.updateListsBackwards(taskListView, studentListView);
         } else if (!taskListView.isDisabled()) {
             tasks = null;
-            Controller.update_lists_backwards(courseListView, taskListView);
+            Controller.updateListsBackwards(courseListView, taskListView);
         } else {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
@@ -141,13 +141,13 @@ public class CheckTasksController {
         }
     }
 
-    public int setProfessor(Professor professor) throws IOException {
+    public int setProfessor(Professor professor) {
         this.user = professor;
         professorCourses = Controller.initializeController(user, courseListView);
-        if (professorCourses != null) {
-            return CREATED;
-        } else {
+        if (professorCourses.isEmpty()) {
             return FAILED_TO_CREATE;
+        } else {
+            return CREATED;
         }
 
     }
