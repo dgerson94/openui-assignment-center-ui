@@ -39,7 +39,7 @@ public class SetCourseRequirementsController {
     @FXML
     private Label numberOfTasksLabel;
 
-    private final String URL_COURSES = "http://localhost:8080/courses";
+    private static final String URL_COURSES = "http://localhost:8080/courses";
 
 
     @FXML
@@ -54,22 +54,7 @@ public class SetCourseRequirementsController {
                 StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks");
                 if (response.toString().equals("[]")) {
                     //we received an empty array from the server so that means that there is no info, and we need to create tasks.
-                    if (numberOfTasksPicker.isVisible()) {
-                        if (numberOfTasksPicker.getValue() == null) {
-                            Error e = new Error("No number selected.", "You did not select how many tasks will be in the course. Please select how many there will be.");
-                            e.raiseError();
-                        } else {
-                            Integer numberOfTasks = numberOfTasksPicker.getValue();
-                            ArrayList<Task> tasks = makeEmptyTasks(numberOfTasks);
-                            postTasks(tasks,courseId);
-                            goToSetTasks(tasks, courseId, event);
-                        }
-                    } else {
-                        numberOfTasksPicker.setVisible(true);
-                        numberOfTasksLabel.setVisible(true);
-                        numberOfTasksWarning.setVisible(true);
-                        listOfCourses.setDisable(true);
-                    }
+                    createTasks(event, courseId);
                 } else if (!response.toString().startsWith("Error")) {
                     //this is a case with a normal response.
                     TypeToken<ArrayList<Task>> courseType = new TypeToken<>() {
@@ -80,6 +65,25 @@ public class SetCourseRequirementsController {
             } catch (IOException e){
                 Error.ioError();
             }
+        }
+    }
+
+    private void createTasks(ActionEvent event, String courseId) throws IOException {
+        if (numberOfTasksPicker.isVisible()) {
+            if (numberOfTasksPicker.getValue() == null) {
+                Error e = new Error("No number selected.", "You did not select how many tasks will be in the course. Please select how many there will be.");
+                e.raiseError();
+            } else {
+                Integer numberOfTasks = numberOfTasksPicker.getValue();
+                ArrayList<Task> tasks = makeEmptyTasks(numberOfTasks);
+                postTasks(tasks, courseId);
+                goToSetTasks(tasks, courseId, event);
+            }
+        } else {
+            numberOfTasksPicker.setVisible(true);
+            numberOfTasksLabel.setVisible(true);
+            numberOfTasksWarning.setVisible(true);
+            listOfCourses.setDisable(true);
         }
     }
 
@@ -130,12 +134,12 @@ public class SetCourseRequirementsController {
     }
 
 
-    public int setProfessor(Professor user) throws IOException {
+    public int setProfessor(Professor user) {
         this.user = user;
         professorCourses = Controller.initializeController(user,listOfCourses);
+        ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
+        numberOfTasksPicker.setItems(numberOfCourses);
         if (professorCourses.isEmpty()) {
-            ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);
-            numberOfTasksPicker.setItems(numberOfCourses);
             return CREATED;
         }
         else{

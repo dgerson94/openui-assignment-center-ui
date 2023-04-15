@@ -73,15 +73,15 @@ public class StudentDashboardController {
 
     @FXML
     void backButtonPressed(ActionEvent event) throws IOException {
-        if (!tasksViewList.isDisabled()){
-            Controller.updateListsBackwards(coursesViewList,tasksViewList);
-        } else  {
-            SceneController.switchToScene(event,"student_sign_in.fxml");
+        if (!tasksViewList.isDisabled()) {
+            Controller.updateListsBackwards(coursesViewList, tasksViewList);
+        } else {
+            SceneController.switchToScene(event, "student_sign_in.fxml");
         }
     }
 
 
-    public void setUser(Professor user) throws IOException {
+    public void setUser(Professor user) {
         this.user = user;
         StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT, URL_COURSES);
         if (!response.toString().startsWith("Error")) {

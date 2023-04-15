@@ -15,7 +15,7 @@ import java.io.IOException;
 public class ProfessorSignInController {
 
     @FXML
-    private TextField full_name;
+    private TextField fullName;
 
     @FXML
     private PasswordField passwordField;
@@ -23,7 +23,7 @@ public class ProfessorSignInController {
     @FXML
     void logonButtonPressed(ActionEvent event) {
         try {
-            if (full_name.getText().matches("")){
+            if (fullName.getText().matches("")){
                 Error e = new Error();
                 e.raiseError();
             } else if (passwordField.getText().matches("")) {
@@ -31,11 +31,11 @@ public class ProfessorSignInController {
                 e.raiseError();
             }
             else {
-                String user_name = full_name.getText();
+                String userName = fullName.getText();
                 String password = passwordField.getText();
-                StringBuffer response = Https.httpGet(user_name,password, Controller.PROFESSOR,"http://localhost:8080/courses");
+                StringBuffer response = Https.httpGet(userName,password, Controller.PROFESSOR,"http://localhost:8080/courses");
                 if (!response.toString().startsWith("Error")) {
-                    Professor user = createUser(user_name, password);
+                    Professor user = createUser(userName, password);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
                     Parent root = loader.load();
                     ProfessorDashboardController pdc = loader.getController();
@@ -58,9 +58,8 @@ public class ProfessorSignInController {
     }
 
 
-    private Professor createUser (String user_name, String password){
-        Professor professor = new Professor(user_name,password);
-        return professor;
+    private Professor createUser (String userName, String password){
+        return new Professor(userName,password);
     }
 
 

@@ -15,7 +15,7 @@ public class ProfessorDashboardController {
     private Professor user;
 
     @FXML
-    void checkTasksButtonPressed(ActionEvent event)  {
+    void checkTasksButtonPressed(ActionEvent event) {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("check_tasks.fxml"));
         Parent root;
         try {
@@ -37,19 +37,17 @@ public class ProfessorDashboardController {
         try {
             root = loader.load();
             SetCourseRequirementsController scrc = loader.getController();
-            int success = scrc.setProfessor(user);
-            if (success == CREATED) {
-                SceneController.switchToScene(event, root);
-            }
+            scrc.setProfessor(user);
+            SceneController.switchToScene(event, root);
         } catch (IOException e) {
             Error.ioError();
         }
     }
 
     @FXML
-    void logoutButtonPressed(ActionEvent event){
+    void logoutButtonPressed(ActionEvent event) {
         try {
-            SceneController.switchToScene(event,"main_screen.fxml");
+            SceneController.switchToScene(event, "main_screen.fxml");
         } catch (IOException e) {
             Error.ioError();
         }

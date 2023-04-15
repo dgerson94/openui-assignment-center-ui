@@ -1,4 +1,5 @@
 package com.example.openuiassignmentcenterui.controllers;
+
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
@@ -14,46 +15,34 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.*;
+import java.nio.file.Files;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class SetTasksPropertiesController {
 
+    private static final String URL_COURSES = "http://localhost:8080/courses/";
     private ArrayList<Task> tasks;
-
     private Professor user;
-
     private String fileAbsolutePath;
-
     private Integer courseId;
-    @FXML
-    private Label Title;
-
     private Task currentTask;
-
     @FXML
     private DatePicker taskDueDatePicker;
-
     @FXML
     private TextField taskFileTextField;
-
     @FXML
     private ListView<String> taskList;
-
     @FXML
     private DatePicker gradeDueDatePicker;
-
     @FXML
     private Slider percentageOfCourseGradeSlider;
-
     @FXML
     private Button uploadFileButton;
-
-    private static final String URL_COURSES = "http://localhost:8080/courses/";
-
-    private static String URL_TASK;
+    private String urlTask;
 
     private boolean updatedJson = false;
 
@@ -72,7 +61,7 @@ public class SetTasksPropertiesController {
     }
 
     @FXML
-    void backButtonPressed(ActionEvent event){
+    void backButtonPressed(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("set_course_requirements.fxml"));
             Parent root = loader.load();
@@ -86,7 +75,7 @@ public class SetTasksPropertiesController {
 
     @FXML
     void editButtonPressed(ActionEvent event) {
-        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton ,false);
+        setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, false);
     }
 
     @FXML
@@ -94,19 +83,19 @@ public class SetTasksPropertiesController {
         String newCheckDeadLine = String.valueOf(gradeDueDatePicker.getValue());
         String newSubmissionDeadline = String.valueOf(taskDueDatePicker.getValue());
         Double newWeightInGrade = percentageOfCourseGradeSlider.getValue() / 100;
-        if(!newWeightInGrade.equals(currentTask.getWeightInGrade())){
+        if (!newWeightInGrade.equals(currentTask.getWeightInGrade())) {
             currentTask.setWeightInGrade(newWeightInGrade);
             updatedJson = true;
         }
-        if(!newSubmissionDeadline.equals(currentTask.getSubmissionDeadline().substring(0,10))){
+        if (!newSubmissionDeadline.equals(currentTask.getSubmissionDeadline().substring(0, 10))) {
             currentTask.setSubmissionDeadline(newSubmissionDeadline);
             updatedJson = true;
         }
-        if(!newCheckDeadLine.equals(currentTask.getCheckDeadLine().substring(0,10))){
+        if (!newCheckDeadLine.equals(currentTask.getCheckDeadLine().substring(0, 10))) {
             currentTask.setCheckDeadLine(newCheckDeadLine);
             updatedJson = true;
         }
-        if(updatedJson){
+        if (updatedJson) {
             try {
                 sendJson();
             } catch (IOException e) {
@@ -114,7 +103,7 @@ public class SetTasksPropertiesController {
             }
             updatedJson = false;
         }
-        if (updatedFile){
+        if (updatedFile) {
             sendFile();
             updatedFile = false;
         }
@@ -123,17 +112,17 @@ public class SetTasksPropertiesController {
 
     private void sendFile() {
         File file = new File(fileAbsolutePath);
-        Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_TASK + "/file", file, currentTask.getHasFile());
+        Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, urlTask + "/file", file, currentTask.getHasFile());
     }
 
     private void sendJson() throws IOException {
         Task tmp = new Task(currentTask.getId(), currentTask.getSubmissionDeadline(), currentTask.getCheckDeadLine(), currentTask.getWeightInGrade());
         Gson gson = new Gson();
         String jsonResponse = gson.toJson(tmp);
-        Https.sendJson(user.getId(), user.getPassword(),"PUT", Controller.PROFESSOR,URL_TASK, jsonResponse);
+        Https.sendJson(user.getId(), user.getPassword(), "PUT", Controller.PROFESSOR, urlTask, jsonResponse);
     }
 
-    public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId){
+    public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId) {
         this.user = user;
         this.tasks = tasks;
         this.courseId = courseId;
@@ -159,31 +148,29 @@ public class SetTasksPropertiesController {
     }
 
     private void onItemSelected(ListView<String> listView) {
-        listView.getSelectionModel().selectedItemProperty().addListener(
-                (ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
-                    if (newVal != null) {
-                        String currentTaskString = taskList.getSelectionModel().getSelectedItem();
-                        currentTask = getCurrentTask(currentTaskString);
-                        percentageOfCourseGradeSlider.adjustValue(currentTask.getWeightInGrade() * 100);
-                        gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
-                        taskDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
-                        URL_TASK = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
-                        try {
-                            File file = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_TASK + "/file");
-                            if (file != null){
-                                taskFileTextField.setText(file.getName());
-                                file.delete();
-                            }
-                            else {
-                                taskFileTextField.clear();
-                                taskFileTextField.setPromptText("Please Upload Task");
-                            }
-                            setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
-                        } catch (IOException e) {
-                            Error.ioError();
-                        }
+        listView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> ov, String oldVal, String newVal) -> {
+            if (newVal != null) {
+                String currentTaskString = taskList.getSelectionModel().getSelectedItem();
+                currentTask = getCurrentTask(currentTaskString);
+                percentageOfCourseGradeSlider.adjustValue(currentTask.getWeightInGrade() * 100);
+                gradeDueDatePicker.setValue(makeLocalDate(currentTask.getCheckDeadLine()));
+                taskDueDatePicker.setValue(makeLocalDate(currentTask.getSubmissionDeadline()));
+                urlTask = URL_COURSES + courseId + "/tasks/" + currentTask.getId();
+                try {
+                    File file = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, urlTask + "/file");
+                    if (file != null) {
+                        taskFileTextField.setText(file.getName());
+                        Files.delete(file.toPath());
+                    } else {
+                        taskFileTextField.clear();
+                        taskFileTextField.setPromptText("Please Upload Task");
                     }
-                });
+                    setDisable(percentageOfCourseGradeSlider, gradeDueDatePicker, taskDueDatePicker, uploadFileButton, true);
+                } catch (IOException e) {
+                    Error.ioError();
+                }
+            }
+        });
     }
 
     private void setDisable(Slider s, DatePicker dp1, DatePicker dp2, Button btn, Boolean b) {

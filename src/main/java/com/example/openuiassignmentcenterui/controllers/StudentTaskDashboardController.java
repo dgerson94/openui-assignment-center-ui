@@ -6,23 +6,18 @@ import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Professor;
 import com.example.openuiassignmentcenterui.models.Submission;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Files;
 
 public class StudentTaskDashboardController {
     private Professor user;
@@ -31,6 +26,9 @@ public class StudentTaskDashboardController {
 
     @FXML
     private TextField gradeTextField;
+
+    public static final String TASKS = "/tasks/";
+
     @FXML
     void uploadFileButtonPressed(ActionEvent event) {
         Stage stage = new Stage();
@@ -38,16 +36,13 @@ public class StudentTaskDashboardController {
         fileChooser.setTitle("Open Answer File");
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
-            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/mysubmission/file";
+            String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/mysubmission/file";
             try {
                 boolean hasFile;
-                File response = Https.httpGetFile(user.getId(), user.getPassword(),Controller.STUDENT,target);
-                if (response == null){
-                    hasFile = false;
-                } else {
-                    hasFile = true;
-                }
-                Https.httpUploadFile(user.getId(), user.getPassword(), Controller.STUDENT, target, file,hasFile);
+                File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target);
+                hasFile = response != null;
+                Files.delete(response.toPath());
+                Https.httpUploadFile(user.getId(), user.getPassword(), Controller.STUDENT, target, file, hasFile);
             } catch (IOException e) {
                 Error.ioError();
             }
@@ -55,10 +50,10 @@ public class StudentTaskDashboardController {
     }
 
     @FXML
-    void downloadFeedbackFilePressed(ActionEvent event){
+    void downloadFeedbackFilePressed(ActionEvent event) {
         try {
-            String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/mysubmission/feedbackFile";
-            File response = Https.httpGetFile(user.getId(),user.getPassword(),Controller.STUDENT,target,true);
+            String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/mysubmission/feedbackFile";
+            File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target, true);
             if (response != null) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Download Successful");
@@ -88,14 +83,14 @@ public class StudentTaskDashboardController {
         this.user = user;
         this.taskId = taskId;
         this.courseId = courseId;
-        String target = Controller.URL_COURSES + "/" + courseId + "/tasks/" + taskId +"/mysubmission";
-        StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT,target);
+        String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/mysubmission";
+        StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT, target);
         if (response.toString().equals("No Submission.")) {
-
+            System.out.println("There was no student submission.");
         } else if (!response.toString().startsWith("Error")) {
-            Submission submission = new Gson().fromJson(String.valueOf(response),Submission.class);
+            Submission submission = new Gson().fromJson(String.valueOf(response), Submission.class);
             //for now assume there is only one answer, maybe in future make a decision of sorts. Need to fix always error.
-            if (submission.getGrade() != null){
+            if (submission.getGrade() != null) {
                 gradeTextField.setText(submission.getGrade().toString());
             }
         }

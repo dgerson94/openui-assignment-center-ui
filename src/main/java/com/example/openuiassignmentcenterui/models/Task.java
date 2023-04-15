@@ -1,6 +1,5 @@
 package com.example.openuiassignmentcenterui.models;
 
-import java.io.File;
 
 public class Task {
     private Integer id;
@@ -8,8 +7,6 @@ public class Task {
     private String checkDeadLine;
     private Double weightInGrade;
     private Boolean hasFile;
-
-    private transient File file;
 
     private Integer courseId;
 

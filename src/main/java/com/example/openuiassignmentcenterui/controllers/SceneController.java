@@ -13,6 +13,9 @@ public class SceneController {
     private static Stage stage;
     private static Scene scene;
 
+    private SceneController() {
+        throw new IllegalStateException("SceneController class");
+    }
 
     public static void switchToScene(ActionEvent event, String fxml) throws IOException{
         Parent root = FXMLLoader.load(SceneController.class.getResource(fxml));
@@ -22,7 +25,7 @@ public class SceneController {
         stage.show();
     }
 
-    public static void switchToScene(ActionEvent event, Parent root) throws IOException{
+    public static void switchToScene(ActionEvent event, Parent root){
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
