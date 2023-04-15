@@ -90,7 +90,7 @@ public class CheckTasksController {
             taskId = Controller.getTaskId(pickedTask, tasks);
             StringBuffer responseStudents = Https.httpGet(user.getId(), user.getPassword(), Controller.PROFESSOR, URL_COURSES + "/" + courseId + "/tasks/" + taskId + "/submissions");
             if (responseStudents.toString().equals("[]")) {
-                Error e = new Error("No students in this course.", "Call the rector and complain that no one signed up for your course.");
+                Error e = new Error("No students in this course.", "No students have given in their answers yet.");
                 e.raiseError();
             } else if (!responseStudents.toString().startsWith("Error")) {
                 TypeToken<ArrayList<Submission>> submissionType = new TypeToken<>() {
