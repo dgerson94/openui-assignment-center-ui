@@ -4,7 +4,7 @@ import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Course;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,7 +28,7 @@ public class SetCourseRequirementsController {
     private static final double DEFAULT_PERCENTAGE = 0.1;
     private static final int CREATED = 1;
     private static final int FAILED_TO_CREATE = -1;
-    private Professor user;
+    private User user;
     private ArrayList<Course> professorCourses;
     @FXML
     private ListView<String> listOfCourses;
@@ -134,7 +134,7 @@ public class SetCourseRequirementsController {
     }
 
 
-    public int setProfessor(Professor user) {
+    public int setUser(User user) {
         this.user = user;
         professorCourses = Controller.initializeController(user,listOfCourses);
         ObservableList<Integer> numberOfCourses = FXCollections.observableArrayList(3, 4, 5, 6);

@@ -3,7 +3,7 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Submission;
 import com.google.gson.Gson;
 import javafx.event.ActionEvent;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class StudentTaskDashboardController {
-    private Professor user;
+    private User user;
     private String courseId;
     private String taskId;
 
@@ -79,7 +79,7 @@ public class StudentTaskDashboardController {
         }
     }
 
-    public void setController(Professor user, String taskId, String courseId) {
+    public void setController(User user, String taskId, String courseId) {
         this.user = user;
         this.taskId = taskId;
         this.courseId = courseId;

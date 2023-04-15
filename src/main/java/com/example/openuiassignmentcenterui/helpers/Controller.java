@@ -1,7 +1,7 @@
 package com.example.openuiassignmentcenterui.helpers;
 
 import com.example.openuiassignmentcenterui.models.Course;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Submission;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
@@ -25,7 +25,7 @@ public class Controller {
         throw new IllegalStateException("Controller class");
     }
 
-    public static ArrayList<Course> initializeController(Professor user, ListView<String> listOfCourses) {
+    public static ArrayList<Course> initializeController(User user, ListView<String> listOfCourses) {
         String userName = user.getId();
         String password = user.getPassword();
         StringBuffer response = Https.httpGet(userName, password, Controller.PROFESSOR, URL_COURSES);
@@ -98,8 +98,8 @@ public class Controller {
         return oList;
     }
 
-    public static Professor createUser(String userName, String password) {
-        return new Professor(userName, password);
+    public static User createUser(String userName, String password) {
+        return new User(userName, password);
     }
 
     public static void updateListsForward(ListView<String> newList, ListView<String> oldList, ObservableList<String> newOList) {

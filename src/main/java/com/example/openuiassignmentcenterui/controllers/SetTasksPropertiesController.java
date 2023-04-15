@@ -3,7 +3,7 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
 import javafx.beans.value.ObservableValue;
@@ -26,7 +26,7 @@ public class SetTasksPropertiesController {
 
     private static final String URL_COURSES = "http://localhost:8080/courses/";
     private ArrayList<Task> tasks;
-    private Professor user;
+    private User user;
     private String fileAbsolutePath;
     private Integer courseId;
     private Task currentTask;
@@ -66,7 +66,7 @@ public class SetTasksPropertiesController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("set_course_requirements.fxml"));
             Parent root = loader.load();
             SetCourseRequirementsController scrc = loader.getController();
-            scrc.setProfessor(user);
+            scrc.setUser(user);
             SceneController.switchToScene(event, root);
         } catch (IOException e) {
             Error.ioError();
@@ -122,7 +122,7 @@ public class SetTasksPropertiesController {
         Https.sendJson(user.getId(), user.getPassword(), "PUT", Controller.PROFESSOR, urlTask, jsonResponse);
     }
 
-    public void setTasks(Professor user, ArrayList<Task> tasks, Integer courseId) {
+    public void setTasks(User user, ArrayList<Task> tasks, Integer courseId) {
         this.user = user;
         this.tasks = tasks;
         this.courseId = courseId;

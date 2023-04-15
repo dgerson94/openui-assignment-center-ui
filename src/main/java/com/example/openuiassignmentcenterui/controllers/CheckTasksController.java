@@ -4,7 +4,7 @@ import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Course;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Submission;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
@@ -24,7 +24,7 @@ public class CheckTasksController {
     private static final int CREATED = 1;
     private static final int FAILED_TO_CREATE = -1;
     private static final String URL_COURSES = "http://localhost:8080/courses";
-    private Professor user;
+    private User user;
     @FXML
     private ListView<String> taskListView;
     @FXML
@@ -141,9 +141,9 @@ public class CheckTasksController {
         }
     }
 
-    public int setProfessor(Professor professor) {
-        this.user = professor;
-        professorCourses = Controller.initializeController(user, courseListView);
+    public int setProfessor(User user) {
+        this.user = user;
+        professorCourses = Controller.initializeController(this.user, courseListView);
         if (professorCourses.isEmpty()) {
             return FAILED_TO_CREATE;
         } else {
@@ -152,11 +152,11 @@ public class CheckTasksController {
 
     }
 
-    public Professor getUser() {
+    public User getUser() {
         return user;
     }
 
-    public void setUser(Professor user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

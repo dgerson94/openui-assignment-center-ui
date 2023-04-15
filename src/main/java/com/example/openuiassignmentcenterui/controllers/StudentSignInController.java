@@ -3,7 +3,7 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,13 +31,12 @@ public class StudentSignInController {
             Error e = new Error("No password", "You didn't put in any password, please enter a password.");
             e.raiseError();
         } else {
-            //TODO: Used a professor, need to create a user model and use it for sign in information for both, will make less code.
             String userName = fullName.getText();
             String password = passwordField.getText();
             StringBuffer response = Https.httpGet(userName, password, Controller.STUDENT, "http://localhost:8080/courses");
             if (!response.toString().startsWith("Error")) {
                 try {
-                    Professor user = Controller.createUser(userName, password);
+                    User user = Controller.createUser(userName, password);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
                     Parent root = loader.load();
                     StudentDashboardController sdc = loader.getController();

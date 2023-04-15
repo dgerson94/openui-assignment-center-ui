@@ -3,7 +3,7 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Submission;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,7 +27,7 @@ public class CheckTaskController {
     private static final int CREATED = 1;
     private static final String TASKS = "/tasks/";
     private static final String SUBMISSIONS = "/submissions/";
-    private Professor user;
+    private User user;
     private String studentId;
     private String taskId;
     private String courseId;
@@ -122,7 +122,7 @@ public class CheckTaskController {
 
     }
 
-    public void setController(Professor user, String studentId, String taskId, String courseId) {
+    public void setController(User user, String studentId, String taskId, String courseId) {
         this.user = user;
         this.studentId = studentId;
         this.taskId = taskId;

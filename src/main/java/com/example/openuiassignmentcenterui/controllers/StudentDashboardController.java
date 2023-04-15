@@ -4,7 +4,7 @@ import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
 import com.example.openuiassignmentcenterui.models.Course;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import static com.example.openuiassignmentcenterui.helpers.Controller.URL_COURSES;
 
 public class StudentDashboardController {
-    private Professor user;
+    private User user;
     private String courseId;
     private String taskId;
     private ArrayList<Course> studentCourses;
@@ -81,7 +81,7 @@ public class StudentDashboardController {
     }
 
 
-    public void setUser(Professor user) {
+    public void setUser(User user) {
         this.user = user;
         StringBuffer response = Https.httpGet(user.getId(), user.getPassword(), Controller.STUDENT, URL_COURSES);
         if (!response.toString().startsWith("Error")) {

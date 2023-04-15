@@ -3,7 +3,7 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.models.Professor;
+import com.example.openuiassignmentcenterui.models.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,7 +35,7 @@ public class ProfessorSignInController {
                 String password = passwordField.getText();
                 StringBuffer response = Https.httpGet(userName,password, Controller.PROFESSOR,"http://localhost:8080/courses");
                 if (!response.toString().startsWith("Error")) {
-                    Professor user = createUser(userName, password);
+                    User user = createUser(userName, password);
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("professor_dashboard.fxml"));
                     Parent root = loader.load();
                     ProfessorDashboardController pdc = loader.getController();
@@ -58,8 +58,8 @@ public class ProfessorSignInController {
     }
 
 
-    private Professor createUser (String userName, String password){
-        return new Professor(userName,password);
+    private User createUser (String userName, String password){
+        return new User(userName,password);
     }
 
 
