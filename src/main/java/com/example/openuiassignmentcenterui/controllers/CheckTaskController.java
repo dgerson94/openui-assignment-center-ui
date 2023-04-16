@@ -116,6 +116,7 @@ public class CheckTaskController {
             Stage stage = new Stage();
             FileChooser fileChooser = new FileChooser();
             File save = fileChooser.showSaveDialog(stage);
+            if (save == null) return;
             if (response != null) {
                 downloaded = response.renameTo(save);
             }

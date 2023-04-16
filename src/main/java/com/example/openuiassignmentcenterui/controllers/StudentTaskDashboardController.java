@@ -53,15 +53,15 @@ public class StudentTaskDashboardController {
     @FXML
     void downloadFeedbackFilePressed(ActionEvent event) {
         try {
-            boolean downloaded = false;
+            boolean downloaded;
             String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/mysubmission/feedbackFile";
             File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target, true);
+            if (response == null) return;
             Stage stage = new Stage();
             FileChooser fileChooser = new FileChooser();
             File save = fileChooser.showSaveDialog(stage);
-            if (response != null) {
-                downloaded = response.renameTo(save);
-            }
+            if (save == null) return;
+            downloaded = response.renameTo(save);
             if (downloaded) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Download Successful");
@@ -77,15 +77,15 @@ public class StudentTaskDashboardController {
     @FXML
     void downloadTaskFilePressed (ActionEvent event){
         try {
-            boolean downloaded = false;
+            boolean downloaded;
             String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/file";
             File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target, true);
+            if ( response == null ) return;
             Stage stage = new Stage();
             FileChooser fileChooser = new FileChooser();
             File save = fileChooser.showSaveDialog(stage);
-            if (response != null) {
-                downloaded = response.renameTo(save);
-            }
+            if (save == null) return;
+            downloaded = response.renameTo(save);
             if (downloaded) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Download Successful");
