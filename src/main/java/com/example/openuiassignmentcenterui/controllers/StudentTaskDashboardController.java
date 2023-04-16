@@ -68,6 +68,23 @@ public class StudentTaskDashboardController {
     }
 
     @FXML
+    void downloadTaskFilePressed (ActionEvent event){
+        try {
+            String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/file";
+            File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target, true);
+            if (response != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Download Successful");
+                alert.setHeaderText("The Task file was downloaded successfully.");
+                alert.setContentText("You can find the downloaded file in the projects file.");
+                alert.showAndWait();
+            }
+        } catch (IOException e) {
+            Error.ioError();
+        }
+    }
+
+    @FXML
     void backButtonPressed(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("student_dashboard.fxml"));
