@@ -110,13 +110,22 @@ public class CheckTaskController {
     @FXML
     void downloadSubmissionButtonPressed(ActionEvent event) {
         try {
+            boolean downloaded = false;
             String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + SUBMISSIONS + studentId + "/file";
-            Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target);
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Download Successful");
-            alert.setHeaderText("The Student's answer downloaded successfully.");
-            alert.setContentText("You can find the downloaded file in the projects file.");
-            alert.showAndWait();
+            File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target);
+            Stage stage = new Stage();
+            FileChooser fileChooser = new FileChooser();
+            File save = fileChooser.showSaveDialog(stage);
+            if (response != null) {
+                downloaded = response.renameTo(save);
+            }
+            if (downloaded) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Download Successful");
+                alert.setHeaderText("The Student's answer downloaded successfully.");
+                alert.setContentText("You can find the downloaded file in the projects file.");
+                alert.showAndWait();
+            }
         } catch (Exception e) {
             Error.ioError();
         }

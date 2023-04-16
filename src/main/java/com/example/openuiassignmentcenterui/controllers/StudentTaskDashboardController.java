@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -53,9 +54,16 @@ public class StudentTaskDashboardController {
     @FXML
     void downloadFeedbackFilePressed(ActionEvent event) {
         try {
+            boolean downloaded = false;
             String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/mysubmission/feedbackFile";
             File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target, true);
+            Stage stage = new Stage();
+            FileChooser fileChooser = new FileChooser();
+            File save = fileChooser.showSaveDialog(stage);
             if (response != null) {
+                downloaded = response.renameTo(save);
+            }
+            if (downloaded) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Download Successful");
                 alert.setHeaderText("The Professor's feedback downloaded successfully.");
@@ -70,9 +78,16 @@ public class StudentTaskDashboardController {
     @FXML
     void downloadTaskFilePressed (ActionEvent event){
         try {
+            boolean downloaded = false;
             String target = Controller.URL_COURSES + "/" + courseId + TASKS + taskId + "/file";
             File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.STUDENT, target, true);
+            Stage stage = new Stage();
+            FileChooser fileChooser = new FileChooser();
+            File save = fileChooser.showSaveDialog(stage);
             if (response != null) {
+                downloaded = response.renameTo(save);
+            }
+            if (downloaded) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Download Successful");
                 alert.setHeaderText("The Task file was downloaded successfully.");
