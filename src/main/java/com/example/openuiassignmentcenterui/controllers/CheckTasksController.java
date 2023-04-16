@@ -3,7 +3,6 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.helpers.SceneController;
 import com.example.openuiassignmentcenterui.models.Course;
 import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Submission;

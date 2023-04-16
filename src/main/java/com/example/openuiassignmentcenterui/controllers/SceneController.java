@@ -1,4 +1,4 @@
-package com.example.openuiassignmentcenterui.helpers;
+package com.example.openuiassignmentcenterui.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;

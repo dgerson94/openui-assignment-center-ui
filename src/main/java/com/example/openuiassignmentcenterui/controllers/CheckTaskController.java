@@ -3,7 +3,6 @@ package com.example.openuiassignmentcenterui.controllers;
 import com.example.openuiassignmentcenterui.helpers.Controller;
 import com.example.openuiassignmentcenterui.helpers.Error;
 import com.example.openuiassignmentcenterui.helpers.Https;
-import com.example.openuiassignmentcenterui.helpers.SceneController;
 import com.example.openuiassignmentcenterui.models.User;
 import com.example.openuiassignmentcenterui.models.Submission;
 import com.google.gson.Gson;
@@ -98,7 +97,8 @@ public class CheckTaskController {
                 boolean hasFile;
                 File response = Https.httpGetFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target);
                 hasFile = response != null;
-                Files.delete(response.toPath());
+                if (response != null)
+                    Files.delete(response.toPath());
                 Https.httpUploadFile(user.getId(), user.getPassword(), Controller.PROFESSOR, target, file, hasFile);
             } catch (IOException e) {
                 Error.ioError();
